@@ -1,0 +1,2 @@
+ALTER TABLE `assert`.`BGR` 
+CHANGE COLUMN `password` `password` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL DEFAULT NULL COMMENT '密码' ;
