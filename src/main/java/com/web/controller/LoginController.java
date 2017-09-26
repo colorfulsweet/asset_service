@@ -1,5 +1,7 @@
 package com.web.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class LoginController {
 	
 	
 	@PostMapping("/login")
-	public ResBody login(String user, String password) {
+	public ResBody login(String user, String password, HttpSession session) {
 		ResBody res = new ResBody();
 		if(StringHelper.isEmpty(user) || StringHelper.isEmpty(password)) {
 			res.setStatus(0);
@@ -33,6 +35,7 @@ public class LoginController {
 		} else {
 			res.setStatus(1);
 			res.setData(bgr);
+			session.setAttribute("login_user", bgr);
 		}
 		return res;
 	}

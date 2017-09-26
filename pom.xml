@@ -4,24 +4,28 @@
 	<groupId>com.jxd</groupId>
 	<artifactId>assert_service</artifactId>
 	<version>1.0.0</version>
-
+	<properties>
+		<spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+		<mysql-connector.version>5.1.44</mysql-connector.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>1.5.4.RELEASE</version>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>1.5.4.RELEASE</version>
+			<version>${spring-boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>6.0.6</version>
+			<version>${mysql-connector.version}</version>
 		</dependency>
+		
 		<!-- 加密算法工具类 -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -29,6 +33,25 @@
 			<version>1.10</version>
 		</dependency>
 		
+		<!-- 二维码处理工具类 -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<!-- JSON处理工具类 -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.38</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
