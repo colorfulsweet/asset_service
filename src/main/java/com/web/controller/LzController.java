@@ -1,9 +1,15 @@
 package com.web.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -12,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -33,6 +41,8 @@ public class LzController {
 	private static Logger log = Logger.getLogger(LzController.class);
 	@Autowired
 	private LzxxService lzxxService;
+	@Autowired
+	private ServletContext context;
 	
 	/**
 	 * 保存流转信息
@@ -75,5 +85,40 @@ public class LzController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * 拍照上传 (用流转ID和资产ID可以唯一确定到流转表当中的一条数据)
+	 * @param file
+	 * @param lzId 流转ID
+	 * @param zcId 资产ID
+	 */
+	@PostMapping("/uploadPhoto")
+	@ResponseBody
+	public void uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String lzId, String zcId) {
+		byte[] buf = new byte[1024];
+		File outputPath = new File(context.getRealPath("/upload"));
+		if(!outputPath.exists()) {
+			outputPath.mkdirs(); //如果目录不存在则直接创建
+		}
+		String fileName = photo.getOriginalFilename(); //选择的文件原本的名字
+		
+		String fileUUID = UUID.randomUUID().toString();
+		String ext = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+		
+		log.info("fileUUID : " + fileUUID);
+		try{
+			try(InputStream input = photo.getInputStream(); 
+					OutputStream output = new FileOutputStream(outputPath.getAbsolutePath() + "/" + fileUUID + ext)){
+				int len = input.read(buf);
+				while(len > 0) {
+					output.write(buf, 0, len);
+					len = input.read(buf);
+				}
+			}
+		} catch (IOException e) {
+			log.error("文件上传错误!", e);
+		}
+		
+		//TODO 根据lzId找到operateId , 根据operateId和zcId确定流转表中的一条数据
 	}
 }
