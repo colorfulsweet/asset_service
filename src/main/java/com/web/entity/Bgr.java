@@ -8,7 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
+/**
+ * 用户表
+ * @author Sookie
+ *
+ */
 @Entity
 @Table(name="BGR")
 public class Bgr implements Serializable {

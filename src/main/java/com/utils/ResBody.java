@@ -16,6 +16,11 @@ public class ResBody implements Serializable {
 	 * 回传的数据(可被序列化为JSON字符串)
 	 */
 	private Object data;
+	public ResBody() {}
+	public ResBody(Integer status, String msg) {
+		this.status = status;
+		this.msg = msg;
+	}
 	
 	public Integer getStatus() {
 		return status;
