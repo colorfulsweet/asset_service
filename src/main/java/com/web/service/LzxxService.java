@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.google.zxing.WriterException;
 import com.utils.LzFlag;
 import com.utils.QrcodeUtils;
@@ -41,7 +44,7 @@ public class LzxxService {
 			lzxx.setLzsj(new Date());
 			
 			//TODO 上传保存照片 记录照片ID?
-			lzIds.add(lzxxResp.save(lzxx).getUUID());
+			lzIds.add(lzxxResp.save(lzxx).getUuid());
 		}
 		return operateId;
 	}
@@ -57,11 +60,13 @@ public class LzxxService {
 		}
 		List<String> lzIds = new ArrayList<String>();
 		for(Lzxx lzxx : result) {
-			lzIds.add(lzxx.getUUID());
+			lzIds.add(lzxx.getUuid());
 		}
-		String biaozhi = result.get(0).getBiaozhi();
+		Map<String, Object> qrcodeContent = new HashMap<String, Object>();
+		qrcodeContent.put("operateType", result.get(0).getBiaozhi()); //操作类型 1.出库 2.流转 3.回收
+		qrcodeContent.put("lzIds", lzIds);//多个流转ID
 		try {
-			QrcodeUtils.createQrcode(biaozhi + lzIds.toString(), output);
+			QrcodeUtils.createQrcode(JSON.toJSONString(qrcodeContent), output);
 		} catch (WriterException | IOException e) {
 			log.error("生成二维码失败", e);
 		}

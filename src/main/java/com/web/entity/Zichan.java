@@ -2,6 +2,7 @@ package com.web.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-@Table(name="ZICHAN")
+@Table(name="zichan")
 public class Zichan implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -23,25 +24,38 @@ public class Zichan implements Serializable {
 	@Id
 	@GenericGenerator(name="idGen",strategy="uuid")
 	@GeneratedValue(generator="idGen")
-	private String UUID;                 //varchar(32) not null comment 'id',
+	private String uuid;                 //varchar(32) not null comment 'id',
+	@Column(name="zcid")
 	private String  zcID;                 //varchar(32) comment '资产编码',
+	@Column(name="fk_bgdwid")
 	private String fk_bgdwID;            //varchar(32) comment '保管单位编号',
+	@Column(name="mingch")
 	private String mingch;               //varchar(30) comment '名称',
+	@Column(name="zcly")
 	private String  zcly;                 //varchar(30) comment '资产来源',
-	private String  gys;                  //varchar(30) comment '供应商',
+	@Column(name="gys")
+	private String gys;                  //varchar(30) comment '供应商',
+	@Column(name="dcxmmc")
 	private String dcxmmc;               //varchar(30) comment '调出项目名称',
+	@Column(name="shul")
 	private String shul;                 //varchar(30) comment '数量',
+	@Column(name="ggxh")
 	private String  ggxh;                 //varchar(30) comment '规格型号',
+	@Column(name="lbie")
 	private String  lbie;                 //varchar(30) comment '类别',
+	@Column(name="ppcj")
 	private String  ppcj;                 //varchar(30) comment '品牌厂家',
+	@Column(name="danwei")
 	private String  danwei;               //varchar(30) comment '单位',
+	@Column(name="danjia")
 	private String  danjia;               //varchar(30) comment '单价',
+	@Column(name="zczt")
 	private String   zczt;                 //varchar(32) comment '资产状态',
-	public String getUUID() {
-		return UUID;
+	public String getUuid() {
+		return uuid;
 	}
-	public void setUUID(String uUID) {
-		UUID = uUID;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	public String getZcID() {
 		return zcID;

@@ -52,6 +52,14 @@ public class ZichanService {
 		return query.getResultList();
 	}
 	/**
+	 * 根据流转ID查询资产数据
+	 * @param lzIds
+	 * @return
+	 */
+	public List<Zichan> getByLzIds(List<String> lzIds) {
+		return zichanRep.getByLzIds(lzIds);
+	}
+	/**
 	 * 新增或修改
 	 * @param zichan
 	 * @return

@@ -2,6 +2,7 @@ package com.web.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-@Table(name="BGR")
+@Table(name="bgr")
 public class Bgr implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,23 +23,28 @@ public class Bgr implements Serializable {
 	@Id
 	@GenericGenerator(name="idGen",strategy="uuid")
 	@GeneratedValue(generator="idGen")
-	private String UUID;
+	private String uuid;
 	//用户名
+	@Column(name="user")
 	private String user;
 	//密码(SHA1加密)
+	@Column(name="password")
 	private String password;
 	//单位ID
+	@Column(name="dwid")
 	private String dwid;
 	//联系电话
+	@Column(name="lxdh")
 	private String lxdh;
 	//电子邮箱
+	@Column(name="dzyx")
 	private String dzyx;
 	
-	public String getUUID() {
-		return UUID;
+	public String getUuid() {
+		return uuid;
 	}
-	public void setUUID(String uUID) {
-		UUID = uUID;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	public String getUser() {
 		return user;
