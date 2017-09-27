@@ -26,6 +26,7 @@ public class Lzxx implements Serializable {
 	@GenericGenerator(name="idGen",strategy="uuid")
 	@GeneratedValue(generator="idGen")
 	private String UUID;// varchar(32) not null comment '记录编号',
+	private String operateID;//varchar(50) 操作ID - 对于一次操作(选中多个资产实施流转), 该ID相同
 	private String biaozhi;// varchar(30) comment '发放回收流转标志',
 	private String fkZichanZcID;// varchar(32) comment '资产编码',
 	private String fkZhaopianPzzpURL;// varchar(32) comment '凭证照片附件',
@@ -105,5 +106,13 @@ public class Lzxx implements Serializable {
 
 	public void setLzbz(String lzbz) {
 		this.lzbz = lzbz;
+	}
+
+	public String getOperateID() {
+		return operateID;
+	}
+
+	public void setOperateID(String operateID) {
+		this.operateID = operateID;
 	}
 }

@@ -1,12 +1,15 @@
 package com.web.controller;
 
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,7 +23,8 @@ import com.web.service.LzxxService;
 /**
  * 流转相关的API
  * @author Sookie
- *
+ * 
+ * 
  */
 
 @Controller
@@ -58,5 +62,18 @@ public class LzController {
 			default : log.warn("未知的操作类型标识 : " + operate);
 		}
 		return lzxxService.save(zcIds, flag);
+	}
+	/**
+	 * 输出二维码图片
+	 * @param operateId 操作ID
+	 * @param response HTTP响应
+	 */
+	@RequestMapping("/outputQrcode/{operateId}")
+	public void outputQrcode(@PathVariable("operateId")String operateId, HttpServletResponse response) {
+		try {
+			lzxxService.outputQrcode(operateId, response.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
