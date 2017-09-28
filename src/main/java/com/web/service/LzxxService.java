@@ -26,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.google.zxing.WriterException;
-import com.utils.LzFlag;
 import com.utils.QrcodeUtils;
+import com.utils.enums.LzFlag;
+import com.utils.enums.Role;
+import com.web.dao.BgrRespository;
 import com.web.dao.LzxxRespository;
 import com.web.entity.Lzxx;
 
@@ -36,6 +38,9 @@ public class LzxxService {
 	private static Logger log = Logger.getLogger(LzxxService.class);
 	@Autowired
 	private LzxxRespository lzxxResp;
+	
+	@Autowired
+	private BgrRespository bgrResp;
 	
 	@Autowired
 	private QrcodeUtils qrcodeUtils;
@@ -50,9 +55,37 @@ public class LzxxService {
 	 * 保存流转信息
 	 * @param zcIds 资产ID
 	 * @param flag 标识(用于区分 出库 流转 回收)
+	 * @param bgr 操作用户(可能是MA或者MK)
 	 * @return 操作ID
 	 */
-	public String save(Set<String> zcIds, LzFlag flag) {
+	public String save(Set<String> zcIds, LzFlag flag, String bgrId) {
+		String fcrId = null; //发出人
+		String jsrId = null; //接受人
+		if(bgrId != null) {
+			List<String> qxList = bgrResp.queryQxByBgr(bgrId);//当前用户具备的权限
+			switch(flag) {
+			case CK : 
+				if(qxList.contains(Role.MA.getCode())) {
+					//当前用户是材料员
+					fcrId = bgrId;
+				} else if(qxList.contains(Role.MK.getCode())) {
+					//当前用户是保管员
+					jsrId = bgrId;
+				} else {
+					log.warn("当前用户不具备操作权限!");
+					return null;
+				}
+				break;
+			case LZ : break; //TODO
+			case HS : break; //TODO
+			default : 
+				log.warn("未知的操作类型 : " + flag);
+			}
+		} else {
+			log.warn("用户未登录!");
+			return null;
+		}
+		
 		List<String> lzIds = new ArrayList<String>();
 		String operateId = UUID.randomUUID().toString();
 		for(String zcId : zcIds) {
@@ -61,8 +94,8 @@ public class LzxxService {
 			lzxx.setBiaozhi(flag.getFlag().toString());
 			lzxx.setFkZichanZcID(zcId);
 			lzxx.setLzsj(new Date());
-			
-			//TODO 上传保存照片 记录照片ID?
+			lzxx.setFkBgrFcrID(fcrId); //发出人
+			lzxx.setFkBgrJsrID(jsrId); //接受人
 			lzIds.add(lzxxResp.save(lzxx).getUuid());
 		}
 		return operateId;

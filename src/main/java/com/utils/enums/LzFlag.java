@@ -1,4 +1,4 @@
-package com.utils;
+package com.utils.enums;
 /**
  * 发放回收流转标志
  * @author Sookie

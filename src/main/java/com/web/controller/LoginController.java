@@ -1,7 +1,5 @@
 package com.web.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ public class LoginController {
 	
 	
 	@PostMapping("/login")
-	public ResBody login(String user, String password, HttpSession session) {
+	public ResBody login(String user, String password) {
 		ResBody res = new ResBody();
 		if(StringHelper.isEmpty(user) || StringHelper.isEmpty(password)) {
 			res.setStatus(0);
@@ -34,8 +32,9 @@ public class LoginController {
 			res.setMsg("用户名/密码错误");
 		} else {
 			res.setStatus(1);
+			bgr.setPassword(null); //密码信息不回传
 			res.setData(bgr);
-			session.setAttribute("login_user", bgr);
+//			session.setAttribute("login_user", bgr);  // session无效, 客户端不携带cookie信息
 		}
 		return res;
 	}

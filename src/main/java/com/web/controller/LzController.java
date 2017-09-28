@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.utils.LzFlag;
 import com.utils.ResBody;
+import com.utils.enums.LzFlag;
 import com.web.entity.Lzxx;
 import com.web.service.LzxxService;
 
@@ -48,7 +48,7 @@ public class LzController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	public Object save(String selectedIds, String operate) {
+	public Object save(String selectedIds, String operate, String bgrId) {
 		JSONArray arr = (JSONArray) JSON.parse(selectedIds);
 		Set<String> zcIds = new HashSet<String>(); //用set集合自动去重
 		for(Object selectedId : arr) {
@@ -67,7 +67,11 @@ public class LzController {
 			case "3" : flag = LzFlag.HS;break; //回收
 			default : log.warn("未知的操作类型标识 : " + operate);
 		}
-		return lzxxService.save(zcIds, flag);
+		String operateId = lzxxService.save(zcIds, flag, bgrId);
+		if(operateId == null) {
+			return new ResBody(0, "保存流转信息失败");
+		}
+		return operateId;
 	}
 	/**
 	 * 输出二维码图片
