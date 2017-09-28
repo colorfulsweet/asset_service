@@ -56,8 +56,8 @@ public class ZichanService {
 	 * @param lzIds
 	 * @return
 	 */
-	public List<Zichan> getByLzIds(List<String> lzIds) {
-		return zichanRep.getByLzIds(lzIds);
+	public List<Zichan> getByOperateId(String operateId) {
+		return zichanRep.getByOperateId(operateId);
 	}
 	/**
 	 * 新增或修改

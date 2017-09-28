@@ -111,13 +111,9 @@ public class LzxxService {
 		if(result == null || result.isEmpty()) { //按照操作ID未查到数据
 			return;
 		}
-		List<String> lzIds = new ArrayList<String>();
-		for(Lzxx lzxx : result) {
-			lzIds.add(lzxx.getUuid());
-		}
 		Map<String, Object> qrcodeContent = new HashMap<String, Object>();
 		qrcodeContent.put("operateType", result.get(0).getBiaozhi()); //操作类型 1.出库 2.流转 3.回收
-		qrcodeContent.put("lzIds", lzIds);//多个流转ID
+		qrcodeContent.put("operateId", operateId);//多个流转ID
 		try {
 			qrcodeUtils.createQrcode(JSON.toJSONString(qrcodeContent), output);
 		} catch (WriterException | IOException e) {
@@ -161,8 +157,8 @@ public class LzxxService {
 		}
 	}
 	
-	public Lzxx lzxxFilter(String lzId, String zcId) {
-		return lzxxResp.lzxxFilter(lzId, zcId);
+	public Lzxx findByOperateIdAndZcId(String operateId, String zcId) {
+		return lzxxResp.findByOperateIDAndFkZichanZcID(operateId, zcId);
 	}
 	/**
 	 * 更新流转信息当中的照片URL
@@ -194,7 +190,23 @@ public class LzxxService {
 	 * @param operateId 操作ID
 	 * @return update影响的行数(大于0代表操作成功)
 	 */
-	public int finished(String operateId) {
-		return lzxxResp.finished(operateId);
+	public int finished(String operateId, String bgrId) {
+		return lzxxResp.finished(operateId, bgrId);
+	}
+	/**
+	 * 统计一次流转中资产的类型数量(涉及几种类型的物资)
+	 * @param operateId 操作ID
+	 * @return
+	 */
+	public int typeCount(String operateId) {
+		return lzxxResp.typeCount(operateId);
+	}
+	
+	public List<Lzxx> findByOperateID(String operateID) {
+		return lzxxResp.findByOperateID(operateID);
+	}
+	
+	public List<Object[]> getLzxxDetail(String operateId) {
+		return lzxxResp.getLzxxDetail(operateId);
 	}
 }

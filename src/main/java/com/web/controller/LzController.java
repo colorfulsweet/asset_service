@@ -1,7 +1,12 @@
 package com.web.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -28,7 +33,6 @@ import com.web.service.LzxxService;
 /**
  * 流转相关的API
  * @author Sookie
- * 
  * 
  */
 
@@ -95,13 +99,13 @@ public class LzController {
 	 */
 	@PostMapping("/uploadPhoto")
 	@ResponseBody
-	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String lzId, String zcId) {
+	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String operateId, String zcId) {
 		String photoPath = lzxxService.writeFile(photo, context);
 		if(photoPath == null) {
 			return new ResBody(0, "文件上传失败");
 		}
 		//根据lzId找到operateId , 根据operateId和zcId确定流转表中的一条数据
-		Lzxx lzxx = lzxxService.lzxxFilter(lzId, zcId);
+		Lzxx lzxx = lzxxService.findByOperateIdAndZcId(operateId, zcId);
 		if(lzxx == null) {
 			return new ResBody(0, "未获得对应流转信息");
 		}
@@ -129,11 +133,38 @@ public class LzController {
 	 */
 	@GetMapping("/finished")
 	@ResponseBody
-	public ResBody finished(String operateId) {
-		if(lzxxService.finished(operateId) > 0) {
+	public ResBody finished(String operateId, String bgrId) {
+		if(lzxxService.finished(operateId, bgrId) > 0) {
 			return new ResBody(1, "操作成功");
 		} else {
 			return new ResBody(0, "操作失败");
 		}
+	}
+	
+	@GetMapping("/count/{operateId}")
+	@ResponseBody
+	public ResBody count(@PathVariable("operateId")String operateId) {
+		/*
+            <th>出库记录编号</th>
+            <th>资产种类数量</th>
+            <th>领用人</th>
+            <th>备注</th>
+            <th>日期</th>
+            <th>照片数量</th>
+		 */
+		Map<String, Object> countResult = new HashMap<String, Object>();
+		ResBody res = new ResBody(1, "统计成功");
+		res.setData(countResult);
+		
+		countResult.put("typeCount", lzxxService.typeCount(operateId));
+		List<Object[]> result = lzxxService.getLzxxDetail(operateId);
+		if(!result.isEmpty()) {
+			countResult.put("lyr", result.get(0)[0]);
+			if(result.get(0)[1] instanceof Date) {
+				Date date = (Date) result.get(0)[1];
+				countResult.put("rq", new SimpleDateFormat("yyyy-MM-dd").format(date));
+			}
+		}
+		return res;
 	}
 }

@@ -1,6 +1,5 @@
 package com.web.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,8 @@ public class ZichanController {
 	 * @param lzIds
 	 * @return
 	 */
-	@PostMapping("/zichan/getByLzIds")
-	public List<Zichan> getByLzIds(String lzIds) {
-		String[] lzIdArr = lzIds.split(",");
-		return zichanService.getByLzIds(Arrays.asList(lzIdArr));
+	@PostMapping("/zichan/getByOperateId")
+	public List<Zichan> getByOperateId(String operateId) {
+		return zichanService.getByOperateId(operateId);
 	}
 }

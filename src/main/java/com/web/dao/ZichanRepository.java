@@ -10,6 +10,6 @@ import com.web.entity.Zichan;
 
 public interface ZichanRepository extends JpaRepository<Zichan, String> {
 	
-	@Query("from Zichan a where a.uuid in(select b.fkZichanZcID from Lzxx b where b.uuid in(:lzIds))")
-	public List<Zichan> getByLzIds(@Param("lzIds")List<String> lzIds);
+	@Query("from Zichan a where a.uuid in(select b.fkZichanZcID from Lzxx b where b.operateID =:operateId)")
+	public List<Zichan> getByOperateId(@Param("operateId")String operateId);
 }
