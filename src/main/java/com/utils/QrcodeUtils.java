@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Hashtable;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -17,23 +20,28 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  * @author Sookie
  *
  */
+@Component
 public class QrcodeUtils {
 	/**
 	 * 图片宽度
 	 */
-	private static int WIDTH = 300;
+	@Value("${asset.qrcode.width}")
+	private int WIDTH;
 	/**
 	 * 图片高度
 	 */
-	private static int HEIGHT = 300;
+	@Value("${asset.qrcode.height}")
+	private int HEIGHT;
 	/**
 	 * 输出的图片格式
 	 */
-	private static String FORMAT = "jpg";
+	@Value("${asset.qrcode.format}")
+	private String FORMAT;
 	/**
 	 * 二维码中文本的编码类型
 	 */
-	private static String CHARSET = "utf-8";
+	@Value("${asset.qrcode.charset}")
+	private String CHARSET;
 	/**
 	 * 生成二维码并输出到对应的输出流
 	 * @param content 二维码中加入的内容
@@ -41,14 +49,14 @@ public class QrcodeUtils {
 	 * @throws WriterException
 	 * @throws IOException
 	 */
-	public static void createQrcode(String content, OutputStream output) throws WriterException, IOException {
+	public void createQrcode(String content, OutputStream output) throws WriterException, IOException {
 
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
          // 纠错级别（L 7%、M 15%、Q 25%、H 30%）
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         // 内容所使用字符集编码
         hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
-        hints.put(EncodeHintType.MARGIN, 1);//设置二维码边的空度，非负数
+        hints.put(EncodeHintType.MARGIN, 3);//设置二维码边的空度，非负数
 
         BitMatrix bitMatrix = new MultiFormatWriter().encode(content,//要编码的内容
                 BarcodeFormat.QR_CODE,

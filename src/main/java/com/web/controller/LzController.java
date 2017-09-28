@@ -1,13 +1,8 @@
 package com.web.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.utils.LzFlag;
 import com.utils.ResBody;
+import com.web.entity.Lzxx;
 import com.web.service.LzxxService;
 
 /**
@@ -94,31 +90,17 @@ public class LzController {
 	 */
 	@PostMapping("/uploadPhoto")
 	@ResponseBody
-	public void uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String lzId, String zcId) {
-		byte[] buf = new byte[1024];
-		File outputPath = new File(context.getRealPath("/upload"));
-		if(!outputPath.exists()) {
-			outputPath.mkdirs(); //如果目录不存在则直接创建
+	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String lzId, String zcId) {
+		String photoPath = lzxxService.writeFile(photo, context);
+		if(photoPath == null) {
+			return new ResBody(0, "文件上传失败");
 		}
-		String fileName = photo.getOriginalFilename(); //选择的文件原本的名字
-		
-		String fileUUID = UUID.randomUUID().toString();
-		String ext = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-		
-		log.info("fileUUID : " + fileUUID);
-		try{
-			try(InputStream input = photo.getInputStream(); 
-					OutputStream output = new FileOutputStream(outputPath.getAbsolutePath() + "/" + fileUUID + ext)){
-				int len = input.read(buf);
-				while(len > 0) {
-					output.write(buf, 0, len);
-					len = input.read(buf);
-				}
-			}
-		} catch (IOException e) {
-			log.error("文件上传错误!", e);
+		//根据lzId找到operateId , 根据operateId和zcId确定流转表中的一条数据
+		Lzxx lzxx = lzxxService.lzxxFilter(lzId, zcId);
+		if(lzxx == null) {
+			return new ResBody(0, "未获得对应流转信息");
 		}
-		
-		//TODO 根据lzId找到operateId , 根据operateId和zcId确定流转表中的一条数据
+		lzxxService.updatePhotoId(lzxx, photoPath, context);
+		return new ResBody(1, "上传成功");
 	}
 }

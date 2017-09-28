@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //直接注册到spring容器当中的bean
-@SpringBootApplication(scanBasePackages = {"com.web"})
+@SpringBootApplication(scanBasePackages = {"com.web", "com.utils"})
 //针对实体类创建的Repository接口进行的扫描
 @EnableJpaRepositories(basePackages = {"com.web.dao"})
 //针对实体类进行的扫描 ( 扫描的是@Entity注解 )
