@@ -10,3 +10,6 @@ CHANGE COLUMN `fk_zhaopian_pzzpurl` `fk_zhaopian_pzzpurl` VARCHAR(100) NULL DEFA
 ALTER TABLE `pams`.`ryjsgx` 
 ADD COLUMN `uuid` VARCHAR(32) NOT NULL FIRST,
 ADD PRIMARY KEY (`uuid`);
+
+ALTER TABLE `pams`.`lzxx` 
+ADD COLUMN `status` INT NULL COMMENT '流转执行状态(0 未完成  1 已完成)' AFTER `lzbz`;

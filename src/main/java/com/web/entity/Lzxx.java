@@ -45,6 +45,8 @@ public class Lzxx implements Serializable {
 	private String fkBgrJsrID;// varchar(32) comment '接受人编号',
 	@Column(name="lzbz")
 	private String lzbz;// varchar(200) comment '流转备注',
+	@Column(name="status")
+	private Integer status;//流转执行状态 0.未完成  1.已完成
 
 	public String getUuid() {
 		return uuid;
@@ -124,5 +126,13 @@ public class Lzxx implements Serializable {
 
 	public void setOperateID(String operateID) {
 		this.operateID = operateID;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 }

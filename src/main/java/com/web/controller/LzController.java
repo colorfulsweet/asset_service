@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,5 +107,33 @@ public class LzController {
 		}
 		lzxxService.updatePhotoId(lzxx, photoPath, context);
 		return new ResBody(1, "上传成功");
+	}
+	/**
+	 * 验证接收方的操作是否完成
+	 * @param operateId
+	 * @return 
+	 */
+	@GetMapping("/checkFinished")
+	@ResponseBody
+	public ResBody checkFinished(String operateId) {
+		if(lzxxService.checkFinished(operateId)) {
+			return new ResBody(0, "finished");//已完成
+		} else {
+			return new ResBody(1, "unfinish"); //未完成
+		}
+	}
+	/**
+	 * 接收方确认交接
+	 * @param operateId 操作ID
+	 * @return
+	 */
+	@GetMapping("/finished")
+	@ResponseBody
+	public ResBody finished(String operateId) {
+		if(lzxxService.finished(operateId) > 0) {
+			return new ResBody(1, "操作成功");
+		} else {
+			return new ResBody(0, "操作失败");
+		}
 	}
 }

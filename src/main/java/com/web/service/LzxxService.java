@@ -96,6 +96,7 @@ public class LzxxService {
 			lzxx.setLzsj(new Date());
 			lzxx.setFkBgrFcrID(fcrId); //发出人
 			lzxx.setFkBgrJsrID(jsrId); //接受人
+			lzxx.setStatus(0); //状态 : 0未完成
 			lzIds.add(lzxxResp.save(lzxx).getUuid());
 		}
 		return operateId;
@@ -179,5 +180,21 @@ public class LzxxService {
 		}
 		lzxx.setFkZhaopianPzzpURL(photoPath);
 		lzxxResp.save(lzxx);
+	}
+	/**
+	 * 验证该操作ID对应的流转信息是否已经全部完成
+	 * @param operateId 操作ID
+	 * @return 全部完成返回true, 否则返回false
+	 */
+	public boolean checkFinished(String operateId) {
+		return lzxxResp.checkFinished(operateId) == 1;
+	}
+	/**
+	 * 将该操作ID对应的流转数据状态改为1 (已完成)
+	 * @param operateId 操作ID
+	 * @return update影响的行数(大于0代表操作成功)
+	 */
+	public int finished(String operateId) {
+		return lzxxResp.finished(operateId);
 	}
 }
