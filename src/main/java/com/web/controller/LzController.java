@@ -157,6 +157,7 @@ public class LzController {
 		res.setData(countResult);
 		
 		countResult.put("typeCount", lzxxService.typeCount(operateId));
+		countResult.put("photoNum", lzxxService.countPhotoNum(operateId));//照片数量
 		List<Object[]> result = lzxxService.getLzxxDetail(operateId);
 		if(!result.isEmpty()) {
 			countResult.put("lyr", result.get(0)[0]);

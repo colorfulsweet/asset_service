@@ -62,4 +62,15 @@ public interface LzxxRespository extends JpaRepository<Lzxx, String> {
 			" join bgr b on b.uuid=lz.fk_bgr_jsrID " + 
 			" where lz.operate_ID=:operateId group by lz.fk_bgr_jsrID,lz.lzsj ", nativeQuery=true)
 	public List<Object[]> getLzxxDetail(@Param("operateId")String operateId);
+	
+	/**
+	 * 统计一次流转当中添加的照片数量
+	 * @param operateId 操作ID
+	 * @return
+	 */
+	@Query(value="select count(*) from lzxx lz " + 
+			"where lz.operate_id=:operateId " + 
+			"and " + 
+			"lz.fk_zhaopian_pzzpURL is not null and lz.fk_zhaopian_pzzpURL!=''", nativeQuery=true)
+	public int countPhotoNum(@Param("operateId") String operateId);
 }

@@ -202,6 +202,15 @@ public class LzxxService {
 		return lzxxResp.typeCount(operateId);
 	}
 	
+	/**
+	 * 统计一次流转当中添加的照片数量
+	 * @param operateId 操作ID
+	 * @return 照片数量
+	 */
+	public int countPhotoNum(String operateId) {
+		return lzxxResp.countPhotoNum(operateId);
+	}
+	
 	public List<Lzxx> findByOperateID(String operateID) {
 		return lzxxResp.findByOperateID(operateID);
 	}
