@@ -10,6 +10,7 @@ import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.utils.HqlUtils;
 import com.web.dao.ZichanRepository;
 import com.web.entity.Zichan;
 
@@ -26,10 +27,16 @@ public class ZichanService {
 	 * @param zcID
 	 * @param mingch
 	 * @param lbie
+	 * @param uuids
 	 * @return
 	 */
-	public List<Zichan> find(String zcID, String mingch, String lbie) {
+	public List<Zichan> find(String zcID, String mingch, String lbie, String uuids) {
 		StringBuilder hql = new StringBuilder("from Zichan bean where 1=1 ");
+		String[] uuidArr = null;
+		if(StringHelper.isNotEmpty(uuids)) {
+			uuidArr = uuids.split(",");
+			hql.append(" and bean.uuid in ("+HqlUtils.createPlaceholder(uuidArr.length)+") ");
+		}
 		if(StringHelper.isNotEmpty(zcID)) {
 			hql.append(" and bean.zcID like :zcID ");
 		}
@@ -39,7 +46,11 @@ public class ZichanService {
 		if(StringHelper.isNotEmpty(lbie)) {
 			hql.append(" and bean.lbie=:lbie ");
 		}
+		
 		TypedQuery<Zichan> query = entityManager.createQuery(hql.toString(), Zichan.class);
+		if(StringHelper.isNotEmpty(uuids)) {
+			HqlUtils.setParamList(query, uuidArr, 1);
+		}
 		if(StringHelper.isNotEmpty(zcID)) {
 			query.setParameter("zcID", "%"+zcID+"%");
 		}

@@ -21,11 +21,12 @@ public class ZichanController {
 	 * @param zcID 资产编码
 	 * @param mingch 名称
 	 * @param lbie 类别
+	 * @param uuids 多个UUID,以逗号分隔
 	 * @return
 	 */
 	@GetMapping("/zichan/list")
-	public List<Zichan> list(String zcID, String mingch, String lbie) {
-		return zichanService.find(zcID, mingch, lbie);
+	public List<Zichan> list(String zcID, String mingch, String lbie, String uuids) {
+		return zichanService.find(zcID, mingch, lbie, uuids);
 	}
 	/**
 	 * 根据流转ID查询资产数据
