@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.web.entity.Bgr;
 
-public interface BgrRespository extends JpaRepository<Bgr, String> {
+public interface BgrRepository extends JpaRepository<Bgr, String> {
 	
 	public Bgr findByUserAndPassword(String user, String password);
 	

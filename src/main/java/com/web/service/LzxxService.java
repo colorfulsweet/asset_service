@@ -29,18 +29,22 @@ import com.google.zxing.WriterException;
 import com.utils.QrcodeUtils;
 import com.utils.enums.LzFlag;
 import com.utils.enums.Role;
-import com.web.dao.BgrRespository;
-import com.web.dao.LzxxRespository;
+import com.web.dao.BgrRepository;
+import com.web.dao.LzxxRepository;
+import com.web.dao.ZichanRepository;
 import com.web.entity.Lzxx;
 
 @Service
 public class LzxxService {
 	private static Logger log = Logger.getLogger(LzxxService.class);
 	@Autowired
-	private LzxxRespository lzxxResp;
+	private LzxxRepository lzxxRep;
 	
 	@Autowired
-	private BgrRespository bgrResp;
+	private ZichanRepository zichanRep;
+	
+	@Autowired
+	private BgrRepository bgrResp;
 	
 	@Autowired
 	private QrcodeUtils qrcodeUtils;
@@ -97,7 +101,7 @@ public class LzxxService {
 			lzxx.setFkBgrFcrID(fcrId); //发出人
 			lzxx.setFkBgrJsrID(jsrId); //接受人
 			lzxx.setStatus(0); //状态 : 0未完成
-			lzIds.add(lzxxResp.save(lzxx).getUuid());
+			lzIds.add(lzxxRep.save(lzxx).getUuid());
 		}
 		return operateId;
 	}
@@ -107,7 +111,7 @@ public class LzxxService {
 	 * @param output 字节输出流
 	 */
 	public void outputQrcode(String operateId, OutputStream output) {
-		List<Lzxx> result = lzxxResp.findByOperateID(operateId);
+		List<Lzxx> result = lzxxRep.findByOperateID(operateId);
 		if(result == null || result.isEmpty()) { //按照操作ID未查到数据
 			return;
 		}
@@ -158,7 +162,7 @@ public class LzxxService {
 	}
 	
 	public Lzxx findByOperateIdAndZcId(String operateId, String zcId) {
-		return lzxxResp.findByOperateIDAndFkZichanZcID(operateId, zcId);
+		return lzxxRep.findByOperateIDAndFkZichanZcID(operateId, zcId);
 	}
 	/**
 	 * 更新流转信息当中的照片URL
@@ -175,7 +179,7 @@ public class LzxxService {
 			}
 		}
 		lzxx.setFkZhaopianPzzpURL(photoPath);
-		lzxxResp.save(lzxx);
+		lzxxRep.save(lzxx);
 	}
 	/**
 	 * 验证该操作ID对应的流转信息是否已经全部完成
@@ -183,7 +187,7 @@ public class LzxxService {
 	 * @return 全部完成返回true, 否则返回false
 	 */
 	public boolean checkFinished(String operateId) {
-		return lzxxResp.checkFinished(operateId) == 1;
+		return lzxxRep.checkFinished(operateId) == 1;
 	}
 	/**
 	 * 将该操作ID对应的流转数据状态改为1 (已完成)
@@ -191,7 +195,8 @@ public class LzxxService {
 	 * @return update影响的行数(大于0代表操作成功)
 	 */
 	public int finished(String operateId, String bgrId) {
-		return lzxxResp.finished(operateId, bgrId);
+		zichanRep.updateBgrId(operateId, bgrId);
+		return lzxxRep.finished(operateId, bgrId);
 	}
 	/**
 	 * 统计一次流转中资产的类型数量(涉及几种类型的物资)
@@ -199,7 +204,7 @@ public class LzxxService {
 	 * @return
 	 */
 	public int typeCount(String operateId) {
-		return lzxxResp.typeCount(operateId);
+		return lzxxRep.typeCount(operateId);
 	}
 	
 	/**
@@ -208,14 +213,14 @@ public class LzxxService {
 	 * @return 照片数量
 	 */
 	public int countPhotoNum(String operateId) {
-		return lzxxResp.countPhotoNum(operateId);
+		return lzxxRep.countPhotoNum(operateId);
 	}
 	
 	public List<Lzxx> findByOperateID(String operateID) {
-		return lzxxResp.findByOperateID(operateID);
+		return lzxxRep.findByOperateID(operateID);
 	}
 	
 	public List<Object[]> getLzxxDetail(String operateId) {
-		return lzxxResp.getLzxxDetail(operateId);
+		return lzxxRep.getLzxxDetail(operateId);
 	}
 }

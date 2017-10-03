@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.web.entity.Lzxx;
 
-public interface LzxxRespository extends JpaRepository<Lzxx, String> {
+public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	public List<Lzxx> findByOperateID(String operateID);
 	/**
 	 * 根据操作ID和资产ID查询流转信息()
@@ -40,6 +40,7 @@ public interface LzxxRespository extends JpaRepository<Lzxx, String> {
 	@Transactional
 	@Query("update Lzxx bean set bean.status=1,bean.fkBgrJsrID=:bgrId where bean.operateID=:operateId")
 	public int finished(@Param("operateId")String operateId, @Param("bgrId")String bgrId);
+	
 	
 	
 	/**
