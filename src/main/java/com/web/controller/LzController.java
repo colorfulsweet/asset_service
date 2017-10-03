@@ -110,7 +110,9 @@ public class LzController {
 			return new ResBody(0, "未获得对应流转信息");
 		}
 		lzxxService.updatePhotoId(lzxx, photoPath, context);
-		return new ResBody(1, "上传成功");
+		ResBody res = new ResBody(1, "文件上传成功");
+		res.setData(photoPath);
+		return res;
 	}
 	/**
 	 * 验证接收方的操作是否完成
