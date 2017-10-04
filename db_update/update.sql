@@ -15,9 +15,6 @@ ALTER TABLE `pams`.`lzxx`
 ADD COLUMN `status` INT NULL COMMENT '流转执行状态(0 未完成  1 已完成)' AFTER `lzbz`;
 
 ALTER TABLE `zichan`
-ADD COLUMN `bgr_id` VARCHAR(32) NULL DEFAULT NULL COMMENT '保管人ID' AFTER `zczt`;
-
-ALTER TABLE `zichan`
 	ADD INDEX `Index 2` (`lbie`),
 	ADD INDEX `Index 3` (`mingch`);
 

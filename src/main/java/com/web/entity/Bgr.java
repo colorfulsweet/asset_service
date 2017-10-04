@@ -1,12 +1,14 @@
 package com.web.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 /**
@@ -40,6 +42,15 @@ public class Bgr implements Serializable {
 	@Column(name="dzyx")
 	private String dzyx;
 	
+	@Transient
+	private List<String> roles;
+	
+	public List<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
 	public String getUuid() {
 		return uuid;
 	}

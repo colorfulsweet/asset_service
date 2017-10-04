@@ -34,6 +34,7 @@ public class LoginController {
 			res.setStatus(1);
 			bgr.setPassword(null); //密码信息不回传
 			res.setData(bgr);
+			bgr.setRoles(bgrService.queryQxByBgr(bgr.getUuid()));
 //			session.setAttribute("login_user", bgr);  // session无效, 客户端不携带cookie信息
 		}
 		return res;

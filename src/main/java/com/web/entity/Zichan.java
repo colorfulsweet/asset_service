@@ -72,9 +72,6 @@ public class Zichan implements Serializable {
 	
 	@Column(name="zczt")
 	private String zczt ;//varchar(32) DEFAULT NULL COMMENT '资产状态',
-	
-	@Column(name="bgr_id")
-	private String bgrId;//当前保管人ID
 
 	public String getUuid() {
 		return uuid;

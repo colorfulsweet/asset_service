@@ -17,7 +17,10 @@ public interface ZichanRepository extends JpaRepository<Zichan, String> {
 	
 	@Modifying
 	@Transactional
-	@Query("update Zichan bean set bean.bgrId=:bgrId where bean.uuid in "
+	@Query("update Zichan bean set bean.fkBgrID=:bgrId where bean.uuid in "
 			+ "(select lz.fkZichanZcID from Lzxx lz where lz.operateID=:operateId)")
 	public int updateBgrId(@Param("operateId")String operateId, @Param("bgrId")String bgrId);
+	
+	
+	public List<Zichan> findByFkBgrID(String fkBgrID);
 }

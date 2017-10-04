@@ -70,6 +70,10 @@ public class ZichanService {
 	public List<Zichan> getByOperateId(String operateId) {
 		return zichanRep.getByOperateId(operateId);
 	}
+	
+	public List<Zichan> findByBgrId(String bgrId) {
+		return zichanRep.findByFkBgrID(bgrId);
+	}
 	/**
 	 * 新增或修改
 	 * @param zichan

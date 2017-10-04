@@ -68,7 +68,7 @@ public class LzxxService {
 		if(bgrId != null) {
 			List<String> qxList = bgrResp.queryQxByBgr(bgrId);//当前用户具备的权限
 			switch(flag) {
-			case CK : 
+			case CK : //----出库----
 				if(qxList.contains(Role.MA.getCode())) {
 					//当前用户是材料员
 					fcrId = bgrId;
@@ -80,7 +80,15 @@ public class LzxxService {
 					return null;
 				}
 				break;
-			case LZ : break; //TODO
+			case LZ : //----流转----
+				if(qxList.contains(Role.MK.getCode())) {
+					//当前用户是保管员
+					fcrId = bgrId;
+				} else {
+					log.warn("当前用户不具备操作权限!");
+					return null;
+				}
+				break; 
 			case HS : break; //TODO
 			default : 
 				log.warn("未知的操作类型 : " + flag);

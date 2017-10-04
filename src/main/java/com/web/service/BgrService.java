@@ -1,5 +1,7 @@
 package com.web.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +15,9 @@ public class BgrService {
 	
 	public Bgr checkUser(String user, String password) {
 		return bgrRep.findByUserAndPassword(user, password);
+	}
+	
+	public List<String> queryQxByBgr(String bgrId) {
+		return bgrRep.queryQxByBgr(bgrId);
 	}
 }

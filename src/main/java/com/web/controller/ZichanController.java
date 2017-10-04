@@ -29,6 +29,16 @@ public class ZichanController {
 		return zichanService.find(zcID, mingch, lbie, uuids);
 	}
 	/**
+	 * 根据保管人ID查询资产信息
+	 * @param bgrId
+	 * @return
+	 */
+	@GetMapping("/zichan/findByBgrId")
+	public List<Zichan> findByBgrId(String bgrId) {
+		return zichanService.findByBgrId(bgrId);
+	}
+	
+	/**
 	 * 根据流转ID查询资产数据
 	 * @param lzIds
 	 * @return
