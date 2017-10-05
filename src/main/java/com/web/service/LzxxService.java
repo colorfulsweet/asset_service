@@ -200,11 +200,42 @@ public class LzxxService {
 	/**
 	 * 将该操作ID对应的流转数据状态改为1 (已完成)
 	 * @param operateId 操作ID
+	 * @param flag 操作的标识(用于区分 出库 流转 回收)
+	 * @param bgrId 执行操作的用户ID
 	 * @return update影响的行数(大于0代表操作成功)
 	 */
-	public int finished(String operateId, String bgrId) {
-		zichanRep.updateBgrId(operateId, bgrId);
-		return lzxxRep.finished(operateId, bgrId);
+	public int finished(String operateId, LzFlag flag, String bgrId) {
+		int result = 0;
+		if(bgrId != null) {
+			zichanRep.updateBgrId(operateId, bgrId);//TODO 根据角色区分
+			List<String> qxList = bgrResp.queryQxByBgr(bgrId);//当前用户具备的权限
+			switch(flag) {
+			case CK : //----出库----
+				if(qxList.contains(Role.MA.getCode())) {
+					//当前用户是材料员
+					result = lzxxRep.fcrFinished(operateId, bgrId);
+				} else if(qxList.contains(Role.MK.getCode())) {
+					//当前用户是保管员
+					result = lzxxRep.jsrFinished(operateId, bgrId);
+				} else {
+					log.warn("当前用户不具备操作权限!");
+				}
+				break;
+			case LZ : //----流转----
+				if(qxList.contains(Role.MK.getCode())) {
+					result = lzxxRep.jsrFinished(operateId, bgrId);
+				} else {
+					log.warn("当前用户不具备操作权限!");
+				}
+				break; 
+			case HS : break; //TODO 回收
+			default : 
+				log.warn("未知的操作类型 : " + flag);
+			}
+		} else {
+			log.warn("用户未登录!");
+		}
+		return result;
 	}
 	/**
 	 * 统计一次流转中资产的类型数量(涉及几种类型的物资)

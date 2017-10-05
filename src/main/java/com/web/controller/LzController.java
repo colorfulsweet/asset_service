@@ -135,8 +135,8 @@ public class LzController {
 	 */
 	@GetMapping("/finished")
 	@ResponseBody
-	public ResBody finished(String operateId, String bgrId) {
-		if(lzxxService.finished(operateId, bgrId) > 0) {
+	public ResBody finished(String operateId, String operate, String bgrId) {
+		if(lzxxService.finished(operateId, string2LzFlag(operate), bgrId) > 0) {
 			return new ResBody(1, "操作成功");
 		} else {
 			return new ResBody(0, "操作失败");
@@ -169,5 +169,16 @@ public class LzController {
 			}
 		}
 		return res;
+	}
+	
+	private LzFlag string2LzFlag(String operate) {
+		switch(operate) {
+			case "1" : return LzFlag.CK; //出库
+			case "2" : return LzFlag.LZ; //流转
+			case "3" : return LzFlag.HS; //回收
+			default : 
+				log.warn("未知的操作类型标识 : " + operate);
+				return null;
+		}
 	}
 }

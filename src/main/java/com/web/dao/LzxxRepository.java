@@ -32,16 +32,24 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	public int checkFinished(@Param("operateId")String operateId);
 	
 	/**
-	 * 自定义update语句
+	 * 自定义update语句 - 接收人操作确认
 	 * @param operateId 操作ID
 	 * @return 影响的行数
 	 */
 	@Modifying
 	@Transactional
 	@Query("update Lzxx bean set bean.status=1,bean.fkBgrJsrID=:bgrId where bean.operateID=:operateId")
-	public int finished(@Param("operateId")String operateId, @Param("bgrId")String bgrId);
+	public int jsrFinished(@Param("operateId")String operateId, @Param("bgrId")String bgrId);
 	
-	
+	/**
+	 * 自定义update语句 - 发出人操作确认
+	 * @param operateId 操作ID
+	 * @return 影响的行数
+	 */
+	@Modifying
+	@Transactional
+	@Query("update Lzxx bean set bean.status=1,bean.fkBgrFcrID=:bgrId where bean.operateID=:operateId")
+	public int fcrFinished(@Param("operateId")String operateId, @Param("bgrId")String bgrId);
 	
 	/**
 	 * 统计一次流转中资产的类型数量(涉及几种类型的物资)
