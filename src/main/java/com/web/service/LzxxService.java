@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.google.zxing.WriterException;
 import com.utils.QrcodeUtils;
-import com.utils.enums.LzFlag;
+import com.utils.enums.LzType;
 import com.utils.enums.Role;
 import com.web.dao.BgrRepository;
 import com.web.dao.LzxxRepository;
@@ -62,7 +62,7 @@ public class LzxxService {
 	 * @param bgr 操作用户(可能是MA或者MK)
 	 * @return 操作ID
 	 */
-	public String save(Set<String> zcIds, LzFlag flag, String bgrId) {
+	public String save(Set<String> zcIds, LzType flag, String bgrId) {
 		String fcrId = null; //发出人
 		String jsrId = null; //接受人
 		if(bgrId != null) {
@@ -204,10 +204,10 @@ public class LzxxService {
 	 * @param bgrId 执行操作的用户ID
 	 * @return update影响的行数(大于0代表操作成功)
 	 */
-	public int finished(String operateId, LzFlag flag, String bgrId) {
+	public int finished(String operateId, LzType flag, String bgrId) {
 		int result = 0;
+		boolean updateFlag = true;
 		if(bgrId != null) {
-			zichanRep.updateBgrId(operateId, bgrId);//TODO 根据角色区分
 			List<String> qxList = bgrResp.queryQxByBgr(bgrId);//当前用户具备的权限
 			switch(flag) {
 			case CK : //----出库----
@@ -218,6 +218,7 @@ public class LzxxService {
 					//当前用户是保管员
 					result = lzxxRep.jsrFinished(operateId, bgrId);
 				} else {
+					updateFlag = false;
 					log.warn("当前用户不具备操作权限!");
 				}
 				break;
@@ -225,12 +226,19 @@ public class LzxxService {
 				if(qxList.contains(Role.MK.getCode())) {
 					result = lzxxRep.jsrFinished(operateId, bgrId);
 				} else {
+					updateFlag = false;
 					log.warn("当前用户不具备操作权限!");
 				}
 				break; 
-			case HS : break; //TODO 回收
+			case HS : 
+				updateFlag = false;
+				break; //TODO 回收
 			default : 
+				updateFlag = false;
 				log.warn("未知的操作类型 : " + flag);
+			}
+			if(updateFlag) {
+				zichanRep.updateBgrId(operateId);
 			}
 		} else {
 			log.warn("用户未登录!");

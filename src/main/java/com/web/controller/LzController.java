@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.utils.ResBody;
-import com.utils.enums.LzFlag;
+import com.utils.enums.LzType;
 import com.web.entity.Lzxx;
 import com.web.service.LzxxService;
 
@@ -53,7 +53,7 @@ public class LzController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	public Object save(String selectedIds, String operate, String bgrId) {
+	public Object save(String selectedIds, LzType operate, String bgrId) {
 		JSONArray arr = (JSONArray) JSON.parse(selectedIds);
 		Set<String> zcIds = new HashSet<String>(); //用set集合自动去重
 		for(Object selectedId : arr) {
@@ -65,14 +65,7 @@ public class LzController {
 			log.warn("未接收到选中的资产信息");
 			return new ResBody(0, "未接收到选中的资产信息");
 		}
-		LzFlag flag = null;
-		switch(operate) {
-			case "1" : flag = LzFlag.CK;break; //出库
-			case "2" : flag = LzFlag.LZ;break; //流转
-			case "3" : flag = LzFlag.HS;break; //回收
-			default : log.warn("未知的操作类型标识 : " + operate);
-		}
-		String operateId = lzxxService.save(zcIds, flag, bgrId);
+		String operateId = lzxxService.save(zcIds, operate, bgrId);
 		if(operateId == null) {
 			return new ResBody(0, "保存流转信息失败");
 		}
@@ -135,8 +128,8 @@ public class LzController {
 	 */
 	@GetMapping("/finished")
 	@ResponseBody
-	public ResBody finished(String operateId, String operate, String bgrId) {
-		if(lzxxService.finished(operateId, string2LzFlag(operate), bgrId) > 0) {
+	public ResBody finished(String operateId, LzType operate, String bgrId) {
+		if(lzxxService.finished(operateId, operate, bgrId) > 0) {
 			return new ResBody(1, "操作成功");
 		} else {
 			return new ResBody(0, "操作失败");
@@ -169,16 +162,5 @@ public class LzController {
 			}
 		}
 		return res;
-	}
-	
-	private LzFlag string2LzFlag(String operate) {
-		switch(operate) {
-			case "1" : return LzFlag.CK; //出库
-			case "2" : return LzFlag.LZ; //流转
-			case "3" : return LzFlag.HS; //回收
-			default : 
-				log.warn("未知的操作类型标识 : " + operate);
-				return null;
-		}
 	}
 }
