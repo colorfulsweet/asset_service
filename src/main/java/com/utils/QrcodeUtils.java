@@ -17,7 +17,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 /**
  * 二维码处理相关工具方法
- * @author Sookie
+ * @author 夏夜梦星辰
  *
  */
 @Component

@@ -10,7 +10,7 @@ import com.utils.enums.LzType;
 /**
  * 自定义转化器<br>
  * 流转操作标识(1出库,2流转,3回收)转化为LzFlag枚举对象
- * @author zjl
+ * @author 夏夜梦星辰
  *
  */
 @Component

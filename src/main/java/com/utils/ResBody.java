@@ -1,7 +1,11 @@
 package com.utils;
 
 import java.io.Serializable;
-
+/**
+ * HTTP响应包装类
+ * @author 夏夜梦星辰
+ *
+ */
 public class ResBody implements Serializable {
 	private static final long serialVersionUID = -7321788912855027539L;
 	/**

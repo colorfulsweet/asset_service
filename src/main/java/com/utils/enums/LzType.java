@@ -1,7 +1,7 @@
 package com.utils.enums;
 /**
  * 发放回收流转标志
- * @author Sookie
+ * @author 夏夜梦星辰
  *
  */
 public enum LzType {

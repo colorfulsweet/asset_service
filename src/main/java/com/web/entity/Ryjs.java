@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 /**
  * 人员角色表
  * 
- * @author Sookie
+ * @author 夏夜梦星辰
  *
  */
 @Entity

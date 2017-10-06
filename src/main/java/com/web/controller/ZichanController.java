@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.entity.Zichan;
 import com.web.service.ZichanService;
 
+/**
+ * 资产数据操作相关API
+ * @author 夏夜梦星辰
+ *
+ */
 @RestController
 public class ZichanController {
 	@Autowired

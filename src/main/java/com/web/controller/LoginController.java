@@ -1,5 +1,7 @@
 package com.web.controller;
 
+import java.util.Date;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,11 @@ import com.utils.ResBody;
 import com.web.entity.Bgr;
 import com.web.service.BgrService;
 
+/**
+ * 登陆相关API
+ * @author 夏夜梦星辰
+ *
+ */
 @RestController
 public class LoginController {
 	
@@ -35,7 +42,7 @@ public class LoginController {
 			bgr.setPassword(null); //密码信息不回传
 			res.setData(bgr);
 			bgr.setRoles(bgrService.queryQxByBgr(bgr.getUuid()));
-//			session.setAttribute("login_user", bgr);  // session无效, 客户端不携带cookie信息
+			bgr.setToken(DigestUtils.sha256Hex(bgr.getUser() + new Date().getTime()));
 		}
 		return res;
 	}

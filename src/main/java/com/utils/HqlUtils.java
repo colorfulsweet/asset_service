@@ -1,7 +1,11 @@
 package com.utils;
 
 import javax.persistence.Query;
-
+/**
+ * HQL语句处理工具方法
+ * @author 夏夜梦星辰
+ *
+ */
 public class HqlUtils {
 	/**
 	 * 创建占位符列表(常用于in子句)

@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 /**
  * 资产表实体类
  * 
- * @author zjl
+ * @author 夏夜梦星辰
  *
  */
 @Entity

@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 /**
  * 用户表
- * @author Sookie
+ * @author 夏夜梦星辰
  *
  */
 @Entity
@@ -45,6 +45,15 @@ public class Bgr implements Serializable {
 	@Transient
 	private List<String> roles;
 	
+	@Transient
+	private String token;
+	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 	public List<String> getRoles() {
 		return roles;
 	}

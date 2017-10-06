@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 /**
  * 流转信息表
  * 
- * @author Sookie
+ * @author 夏夜梦星辰
  *
  */
 
