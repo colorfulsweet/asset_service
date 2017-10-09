@@ -32,6 +32,10 @@ public class Bgr implements Serializable {
 	//密码(SHA1加密)
 	@Column(name="password")
 	private String password;
+	//用户姓名
+	@Column(name="realname")
+	private String realname;
+	
 	//单位ID
 	@Column(name="dwid")
 	private String dwid;
@@ -95,6 +99,12 @@ public class Bgr implements Serializable {
 	}
 	public void setDzyx(String dzyx) {
 		this.dzyx = dzyx;
+	}
+	public String getRealname() {
+		return realname;
+	}
+	public void setRealname(String realname) {
+		this.realname = realname;
 	}
 	
 }
