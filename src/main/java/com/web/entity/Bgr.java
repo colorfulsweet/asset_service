@@ -36,6 +36,12 @@ public class Bgr implements Serializable {
 	@Column(name="realname")
 	private String realname;
 	
+	@Column(name="department")
+	private String department;//部门
+	
+	@Column(name="title")
+	private String title;//职务
+	
 	//单位ID
 	@Column(name="dwid")
 	private String dwid;
@@ -45,6 +51,9 @@ public class Bgr implements Serializable {
 	//电子邮箱
 	@Column(name="dzyx")
 	private String dzyx;
+	
+	@Column(name="comments")
+	private String comments;//备注
 	
 	@Transient
 	private List<String> roles;
@@ -105,6 +114,24 @@ public class Bgr implements Serializable {
 	}
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+	public String getDepartment() {
+		return department;
+	}
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 }

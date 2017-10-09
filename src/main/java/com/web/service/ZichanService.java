@@ -38,7 +38,7 @@ public class ZichanService {
 			hql.append(" and bean.uuid in ("+HqlUtils.createPlaceholder(uuidArr.length)+") ");
 		}
 		if(StringHelper.isNotEmpty(zcID)) {
-			hql.append(" and bean.zcID like :zcID ");
+			hql.append(" and bean.zcid like :zcID ");
 		}
 		if(StringHelper.isNotEmpty(mingch)) {
 			hql.append(" and bean.mingch like :mingch ");
