@@ -82,4 +82,13 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 			"and " + 
 			"lz.fk_zhaopian_pzzpURL is not null and lz.fk_zhaopian_pzzpURL!=''", nativeQuery=true)
 	public int countPhotoNum(@Param("operateId") String operateId);
+	
+	/**
+	 * 检验一次流转操作是否已经**全部**上传照片
+	 * @param operateId 操作ID
+	 * @return 已全部上传返回1, 否则返回0
+	 */
+	@Query(value="select count(*)=count(case when fk_zhaopian_pzzpurl is not null and fk_zhaopian_pzzpurl != '' then 1 end) " + 
+			"from lzxx where operate_id =:operateId", nativeQuery=true)
+	public int checkUpload(@Param("operateId")String operateId);
 }

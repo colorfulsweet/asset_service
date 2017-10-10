@@ -22,12 +22,13 @@ public interface ZichanRepository extends JpaRepository<Zichan, String> {
 	 */
 	@Modifying
 	@Transactional
-	@Query("update Zichan zc set zc.fkBgrID = " + 
+	@Query("update Zichan zc set zc.bgr.uuid = " + 
 			"(select lz1.fkBgrJsrID from Lzxx lz1 where lz1.operateID =:operateId " + 
 			"group by lz1.fkBgrJsrID) " + 
 			"where zc.uuid in (select lz2.fkZichanZcID from Lzxx lz2 where lz2.operateID =:operateId)")
 	public int updateBgrId(@Param("operateId")String operateId);
 	
 	
-	public List<Zichan> findByFkBgrID(String fkBgrID);
+	@Query("from Zichan zc where zc.bgr.uuid=:fkBgrID")
+	public List<Zichan> findByFkBgrID(@Param("fkBgrID")String fkBgrID);
 }

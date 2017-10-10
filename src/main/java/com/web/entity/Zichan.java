@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -34,8 +36,12 @@ public class Zichan implements Serializable {
 	@Column(name="fk_bgdwid")
 	private String fkBgdwid ;//varchar(32) DEFAULT NULL COMMENT '保管单位编号',
 	
-	@Column(name="fk_bgr_ID")
-	private String fkBgrID ;//varchar(32) NOT NULL COMMENT '保管人',
+	//@Column(name="fk_bgr_ID")
+	//private String fkBgrID ;//varchar(32) NOT NULL COMMENT '保管人',
+	
+	@ManyToOne
+	@JoinColumn(name="fk_bgr_ID")
+	private Bgr bgr; //保管人
 	
 	@Column(name="fk_xm_ID")
 	private String fkXmID ;//varchar(32) NOT NULL COMMENT '项目部',
@@ -95,14 +101,6 @@ public class Zichan implements Serializable {
 
 	public void setFkBgdwid(String fkBgdwid) {
 		this.fkBgdwid = fkBgdwid;
-	}
-
-	public String getFkBgrID() {
-		return fkBgrID;
-	}
-
-	public void setFkBgrID(String fkBgrID) {
-		this.fkBgrID = fkBgrID;
 	}
 
 	public String getFkXmID() {
@@ -199,6 +197,14 @@ public class Zichan implements Serializable {
 
 	public void setZczt(String zczt) {
 		this.zczt = zczt;
+	}
+
+	public Bgr getBgr() {
+		return bgr;
+	}
+
+	public void setBgr(Bgr bgr) {
+		this.bgr = bgr;
 	}
 
 }

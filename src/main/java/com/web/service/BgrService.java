@@ -20,4 +20,8 @@ public class BgrService {
 	public List<String> queryQxByBgr(String bgrId) {
 		return bgrRep.queryQxByBgr(bgrId);
 	}
+	
+	public List<Bgr> findByRealname(String realname) {
+		return bgrRep.findByRealname(realname);
+	}
 }

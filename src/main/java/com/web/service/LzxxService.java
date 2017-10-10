@@ -270,4 +270,13 @@ public class LzxxService {
 	public List<Object[]> getLzxxDetail(String operateId) {
 		return lzxxRep.getLzxxDetail(operateId);
 	}
+	
+	/**
+	 * 检验一次流转操作是否已经**全部**上传照片
+	 * @param operateId 操作ID
+	 * @return 已全部上传返回1, 否则返回0
+	 */
+	public int checkUpload(String operateId) {
+		return lzxxRep.checkUpload(operateId);
+	}
 }

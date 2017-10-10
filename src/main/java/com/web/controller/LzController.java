@@ -27,7 +27,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.utils.ResBody;
 import com.utils.enums.LzType;
+import com.web.entity.Bgr;
 import com.web.entity.Lzxx;
+import com.web.service.BgrService;
 import com.web.service.LzxxService;
 
 /**
@@ -42,6 +44,8 @@ public class LzController {
 	private static Logger log = Logger.getLogger(LzController.class);
 	@Autowired
 	private LzxxService lzxxService;
+	@Autowired
+	private BgrService bgrService;
 	@Autowired
 	private ServletContext context;
 	
@@ -162,5 +166,31 @@ public class LzController {
 			}
 		}
 		return res;
+	}
+	/**
+	 * 检查某次流转是否已经全部上传照片
+	 * @param operateId 操作ID
+	 * @return res.status是1表示已经全部上传, 是0表示未全部上传
+	 */
+	@GetMapping("/checkUpload")
+	@ResponseBody
+	public ResBody checkUpload(String operateId) {
+		return new ResBody(lzxxService.checkUpload(operateId), null);
+	}
+	
+	/**
+	 * 对方无法扫码 - 保存对方ID到流转信息
+	 * @param operateId 操作ID
+	 * @param targetName 对方姓名
+	 * @return
+	 */
+	@PostMapping("/saveTargetName")
+	@ResponseBody
+	public ResBody saveTargetName(String operateId, LzType operate, String targetName) {
+		List<Bgr> targetBgr = bgrService.findByRealname(targetName);
+		if(targetBgr.isEmpty()) {
+			return new ResBody(0, "未找到对应的用户");
+		}
+		return this.finished(operateId, operate, targetBgr.get(0).getUuid());
 	}
 }
