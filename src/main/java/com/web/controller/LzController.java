@@ -112,6 +112,19 @@ public class LzController {
 		return res;
 	}
 	/**
+	 * 获取图片文件(字节流输出)
+	 * @param photoPath 图片路径
+	 * @param response http响应对象
+	 */
+	@GetMapping("/readPhoto")
+	public void readPhoto(String photoPath, HttpServletResponse response) {
+		try {
+			lzxxService.readFile(photoPath, response.getOutputStream(), context);
+		} catch (IOException e) {
+			log.error("读取文件错误!", e);
+		}
+	}
+	/**
 	 * 验证接收方的操作是否完成
 	 * @param operateId
 	 * @return 
@@ -184,10 +197,10 @@ public class LzController {
 	 * @param targetName 对方姓名
 	 * @return
 	 */
-	@PostMapping("/saveTargetName")
+	@PostMapping("/saveTargetTel")
 	@ResponseBody
-	public ResBody saveTargetName(String operateId, LzType operate, String targetName) {
-		List<Bgr> targetBgr = bgrService.findByRealname(targetName);
+	public ResBody saveTargetTel(String operateId, LzType operate, String targetTel) {
+		List<Bgr> targetBgr = bgrService.findByLxdh(targetTel);
 		if(targetBgr.isEmpty()) {
 			return new ResBody(0, "未找到对应的用户");
 		}

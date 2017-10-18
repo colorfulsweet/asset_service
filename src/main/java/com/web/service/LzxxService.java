@@ -1,6 +1,7 @@
 package com.web.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,9 @@ public class LzxxService {
 	
 	@Autowired
 	private QrcodeUtils qrcodeUtils;
+	
+	@Value("${asset.upload.basePath}")
+	private String uploadBasePath;
 	
 	@Value("${asset.upload.rootpath}")
 	private String uploadRootpath;
@@ -142,7 +146,7 @@ public class LzxxService {
 		DateFormat formatter = new SimpleDateFormat(uploadDatedir);
 		
 		String datePath = formatter.format(new Date());
-		File outputPath = new File(context.getRealPath(uploadRootpath + datePath));
+		File outputPath = new File(getAbsolutePath(uploadRootpath + datePath, context));
 		if(!outputPath.exists()) {
 			outputPath.mkdirs(); //如果目录不存在则直接创建
 		}
@@ -168,6 +172,24 @@ public class LzxxService {
 			return null;
 		}
 	}
+	/**
+	 * 读取文件从输出流进行输出
+	 * @param filePath 文件**相对**路径
+	 * @param output 字节输出流
+	 * @throws IOException 
+	 */
+	public void readFile(String filePath, OutputStream output, ServletContext context) throws IOException {
+		InputStream input = new FileInputStream(getAbsolutePath(filePath, context));
+		byte[] buf = new byte[1024];
+		int len = input.read(buf);
+		while(len > 0) {
+			output.write(buf, 0, len);
+			len = input.read(buf);
+		}
+		output.flush();
+		output.close();
+		input.close();
+	}
 	
 	public Lzxx findByOperateIdAndZcId(String operateId, String zcId) {
 		return lzxxRep.findByOperateIDAndFkZichanZcID(operateId, zcId);
@@ -181,7 +203,7 @@ public class LzxxService {
 		String oldPath = lzxx.getFkZhaopianPzzpURL();
 		if(StringHelper.isNotEmpty(oldPath)) {
 			//如果原文件存在, 则删除
-			File oldFile = new File(context.getRealPath(oldPath));
+			File oldFile = new File(getAbsolutePath(oldPath, context));
 			if(oldFile.exists()) {
 				oldFile.delete();
 			}
@@ -278,5 +300,18 @@ public class LzxxService {
 	 */
 	public int checkUpload(String operateId) {
 		return lzxxRep.checkUpload(operateId);
+	}
+	/**
+	 * 根据文件的相对路径获取绝对路径(用于保存和读取文件)
+	 * @param relativePath 相对路径
+	 * @param context servlet上下文对象
+	 * @return 绝对路径(从磁盘根路径开始)
+	 */
+	private String getAbsolutePath(String relativePath, ServletContext context) {
+		if(StringHelper.isEmpty(uploadBasePath)) {
+			return context.getRealPath(relativePath);
+		} else {
+			return uploadBasePath + relativePath;
+		}
 	}
 }

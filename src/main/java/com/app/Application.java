@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -32,7 +33,17 @@ public class Application extends WebMvcConfigurerAdapter {
 			.addPathPatterns("/**")
 			.excludePathPatterns("/login") //登陆
 			.excludePathPatterns("/lz/outputQrcode/*") //二维码图片输出
+			.excludePathPatterns("/lz/readPhoto") //上传的资产照片输出
 			;
 		super.addInterceptors(registry);
 	}
+	
+	@Override  
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*") //允许跨域请求
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT")
+                .maxAge(3600);
+    }
 }

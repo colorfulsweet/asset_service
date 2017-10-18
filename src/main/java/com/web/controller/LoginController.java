@@ -24,7 +24,7 @@ public class LoginController {
 	private BgrService bgrService;
 	
 	
-	@PostMapping("/login")
+	@PostMapping(value="/login")
 	public ResBody login(String user, String password) {
 		ResBody res = new ResBody();
 		if(StringHelper.isEmpty(user) || StringHelper.isEmpty(password)) {
@@ -45,5 +45,22 @@ public class LoginController {
 			bgr.setToken(DigestUtils.sha256Hex(bgr.getUser() + new Date().getTime()));
 		}
 		return res;
+	}
+	/**
+	 * 修改用户的密码
+	 * @param bgrId 用户ID
+	 * @param oldPwd 原密码(先校验是否正确)
+	 * @param newPwd 新密码
+	 * @return 
+	 */
+	@PostMapping(value="/changePwd")
+	public ResBody changePwd(String bgrId, String oldPwd, String newPwd) {
+		Bgr bgr = bgrService.findByUuidAndPassword(bgrId, DigestUtils.sha1Hex(oldPwd));
+		if(bgr == null) {
+			return new ResBody(0, "原密码输入错误!");
+		}
+		bgr.setPassword(DigestUtils.sha1Hex(newPwd));
+		bgrService.save(bgr);
+		return new ResBody(1, "密码修改成功!");
 	}
 }

@@ -17,11 +17,19 @@ public class BgrService {
 		return bgrRep.findByUserAndPassword(user, password);
 	}
 	
+	public Bgr findByUuidAndPassword(String uuid, String password) {
+		return bgrRep.findByUuidAndPassword(uuid, password);
+	}
+	
+	public Bgr save(Bgr bgr) {
+		return bgrRep.save(bgr);
+	}
+	
 	public List<String> queryQxByBgr(String bgrId) {
 		return bgrRep.queryQxByBgr(bgrId);
 	}
 	
-	public List<Bgr> findByRealname(String realname) {
-		return bgrRep.findByRealname(realname);
+	public List<Bgr> findByLxdh(String lxdh) {
+		return bgrRep.findByLxdh(lxdh);
 	}
 }
