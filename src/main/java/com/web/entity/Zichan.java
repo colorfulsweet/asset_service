@@ -23,7 +23,28 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "zichan")
 public class Zichan implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	public Zichan() {}
+	public Zichan(Zichan zc) {
+		//模拟实现对象深拷贝
+		this.uuid = zc.getUuid();
+		this.zcid = zc.getZcid();
+		this.fkBgdwid = zc.getFkBgdwid();
+		this.bgr = zc.getBgr();
+		this.fkXmID = zc.getFkXmID();
+		this.mingch = zc.getMingch();
+		this.zcly = zc.getZcly();
+		this.gysDcxm = zc.getGysDcxm();
+		this.beizhu = zc.getBeizhu();
+		this.shul = zc.getShul();
+		this.ggxh = zc.getGgxh();
+		this.lbie = zc.getLbie();
+		this.ppcj = zc.getPpcj();
+		this.danwei = zc.getDanwei();
+		this.danjia = zc.getDanjia();
+		this.zczt = zc.getZczt();
+	}
+	
 	// 主键
 	@Id
 	@GenericGenerator(name="idGen",strategy="uuid")

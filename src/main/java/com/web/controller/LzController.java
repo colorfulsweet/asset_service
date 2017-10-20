@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.utils.ResBody;
 import com.utils.enums.LzType;
 import com.web.entity.Bgr;
@@ -51,25 +49,23 @@ public class LzController {
 	
 	/**
 	 * 保存流转信息
-	 * @param selectedIds 加入到清单的资产ID(JSON格式)
+	 * @param zcInfo 加入到清单的资产ID(JSON格式)<br>
+	 * 格式 资产ID:数量 键值对 . eg: {"15006":2,"15005":1,"15004":1.7}
 	 * @param operate 操作类型(1.出库 2.流转 3.回收)
+	 * @param bgrId 保管人ID(当前登录用户的ID)
 	 * @return
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	public Object save(String selectedIds, LzType operate, String bgrId) {
-		JSONArray arr = (JSONArray) JSON.parse(selectedIds);
-		Set<String> zcIds = new HashSet<String>(); //用set集合自动去重
-		for(Object selectedId : arr) {
-			if(selectedId != null) {
-				zcIds.add(selectedId.toString());
-			}
-		}
-		if(zcIds.isEmpty()) {
+	public Object save(String zcInfo, LzType operate, String bgrId) {
+		JSONObject jsonObj = (JSONObject) JSON.parse(zcInfo);
+		if(jsonObj.isEmpty()) {
 			log.warn("未接收到选中的资产信息");
 			return new ResBody(0, "未接收到选中的资产信息");
 		}
-		String operateId = lzxxService.save(zcIds, operate, bgrId);
+		Map<String, Object> zcInfoMap = new HashMap<String, Object>();
+		zcInfoMap.putAll(jsonObj);
+		String operateId = lzxxService.save(zcInfoMap, operate, bgrId);
 		if(operateId == null) {
 			return new ResBody(0, "保存流转信息失败");
 		}

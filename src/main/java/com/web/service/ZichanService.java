@@ -90,4 +90,38 @@ public class ZichanService {
 	public void delete(String uuid) {
 		zichanRep.delete(uuid);
 	}
+	
+	/**
+	 * 对zcid相同的资产数据进行合并(这些资产的保管人相同)
+	 * @param zichans
+	 */
+	void mergeZc(List<Zichan> zichans) {
+		//step1 : 执行排序, 将zcid相同的数据聚在一起
+		zichans.sort((zc1, zc2) -> {
+			if(zc1.getZcid() == null) {
+				return -1;
+			}
+			return zc1.getZcid().compareTo(zc2.getZcid());
+		});
+		Zichan lastItem = null;
+		//step2 : 对数据进行遍历,对于zcid相同的数据, 数量求和, 删除重复的, 只留1个 
+		for(Zichan zc : zichans) {
+			if(lastItem == null) {
+				lastItem = zc;
+				continue;
+			}
+			if(zc.getZcid()!=null && zc.getZcid().equals(lastItem.getZcid())) {
+				zc.setShul(zc.getShul().add(lastItem.getShul()));
+				zichanRep.save(zc);//更新当前数据
+				zichanRep.delete(lastItem.getUuid());//删除上一条数据
+				/* eg:
+				 现有两条数据 
+				 uuid:"1001",zcid:"101",shul:2.5
+				 uuid:"1002",zcid:"101",shul:1.2
+				 处理之后保留uuid为1002的数据, shul修改为3.7, uuid为1001的数据删除
+				 */
+			}
+			lastItem = zc;
+		}
+	}
 }

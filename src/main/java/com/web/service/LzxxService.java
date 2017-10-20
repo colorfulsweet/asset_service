@@ -6,14 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
@@ -34,6 +34,7 @@ import com.web.dao.BgrRepository;
 import com.web.dao.LzxxRepository;
 import com.web.dao.ZichanRepository;
 import com.web.entity.Lzxx;
+import com.web.entity.Zichan;
 
 @Service
 public class LzxxService {
@@ -59,14 +60,17 @@ public class LzxxService {
 	@Value("${asset.upload.datedir}")
 	private String uploadDatedir;
 	
+	@Autowired
+	private ZichanService zichanService;
+	
 	/**
 	 * 保存流转信息
-	 * @param zcIds 资产ID
+	 * @param zcIds 资产ID与数量
 	 * @param flag 标识(用于区分 出库 流转 回收)
 	 * @param bgr 操作用户(可能是MA或者MK)
 	 * @return 操作ID
 	 */
-	public String save(Set<String> zcIds, LzType flag, String bgrId) {
+	public String save(Map<String, Object> zcInfoMap, LzType flag, String bgrId) {
 		String fcrId = null; //发出人
 		String jsrId = null; //接受人
 		if(bgrId != null) {
@@ -102,18 +106,46 @@ public class LzxxService {
 			return null;
 		}
 		
-		List<String> lzIds = new ArrayList<String>();
 		String operateId = UUID.randomUUID().toString();
-		for(String zcId : zcIds) {
+		for(Entry<String,Object> entry : zcInfoMap.entrySet()) {
+			Zichan zc = zichanRep.getOne(entry.getKey());
+			BigDecimal currentNum = zc.getShul(); //现有的资产数量
+			BigDecimal lzNum = null; //需要进行流转的资产数量
+			if(entry.getValue() instanceof BigDecimal) {
+				//entry中的value如果是整数就是Integer, 如果是小数就是BigDecimal
+				lzNum = (BigDecimal)entry.getValue();
+			} else if(entry.getValue() instanceof Integer) {
+				lzNum = new BigDecimal((Integer)entry.getValue());
+			} else {
+				log.warn("未知的数据类型:"+entry.getValue().getClass().getName());
+			}
+			String zcId = null;
+			if(lzNum.compareTo(currentNum) < 0) { 
+				//需要流转的资产数量小于现有数量
+				//则需要进行数据的拆分
+				zc.setShul(currentNum.subtract(lzNum)); //减法
+				zichanRep.save(zc);
+				/*
+				 * --拷贝该对象--
+				 * 持久化的对象是一个代理实例
+				 * 直接操作主键之后的保存更新会报错
+				 */
+				Zichan zcCopy = new Zichan(zc); 
+				zcCopy.setUuid(null);
+				zcCopy.setShul(lzNum);
+				zcId = zichanRep.save(zcCopy).getUuid();
+			} else {
+				zcId = zc.getUuid();
+			}
 			Lzxx lzxx = new Lzxx();
 			lzxx.setOperateID(operateId);//操作ID
-			lzxx.setBiaozhi(flag.getFlag().toString());
-			lzxx.setFkZichanZcID(zcId);
-			lzxx.setLzsj(new Date());
+			lzxx.setBiaozhi(flag.getFlag().toString());//流转类型标识(1出库 2流转 3回收)
+			lzxx.setFkZichanZcID(zcId);//资产表数据的uuid
+			lzxx.setLzsj(new Date());//流转时间
 			lzxx.setFkBgrFcrID(fcrId); //发出人
 			lzxx.setFkBgrJsrID(jsrId); //接受人
 			lzxx.setStatus(0); //状态 : 0未完成
-			lzIds.add(lzxxRep.save(lzxx).getUuid());
+			lzxxRep.save(lzxx);
 		}
 		return operateId;
 	}
@@ -252,15 +284,17 @@ public class LzxxService {
 					log.warn("当前用户不具备操作权限!");
 				}
 				break; 
-			case HS : 
+			case HS : //TODO 回收
 				updateFlag = false;
-				break; //TODO 回收
+				break;
 			default : 
 				updateFlag = false;
 				log.warn("未知的操作类型 : " + flag);
 			}
 			if(updateFlag) {
 				zichanRep.updateBgrId(operateId);
+				List<Zichan> zichans = zichanRep.findByFkBgrID(lzxxRep.getJsrIdByOperateid(operateId));
+				zichanService.mergeZc(zichans);//对zcid相同的数据进行合并(数量相加)
 			}
 		} else {
 			log.warn("用户未登录!");
@@ -301,6 +335,7 @@ public class LzxxService {
 	public int checkUpload(String operateId) {
 		return lzxxRep.checkUpload(operateId);
 	}
+	
 	/**
 	 * 根据文件的相对路径获取绝对路径(用于保存和读取文件)
 	 * @param relativePath 相对路径

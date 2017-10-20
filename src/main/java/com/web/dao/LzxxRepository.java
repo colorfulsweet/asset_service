@@ -20,6 +20,10 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	 */
 	public Lzxx findByOperateIDAndFkZichanZcID(String operateID, String fkZichanZcID);
 	
+	@Query(value="select lz.fk_bgr_jsrid from lzxx lz where lz.operate_id=:operateId " + 
+			" group by lz.fk_bgr_jsrid", nativeQuery=true)
+	public String getJsrIdByOperateid(@Param("operateId")String operateId);
+	
 	/**
 	 * 返回1代表全部完成, 返回0代表没有全部完成(只有这两种情况)
 	 * @param operateId 操作ID
@@ -67,7 +71,7 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	 * @param operateId 操作ID
 	 * @return
 	 */
-	@Query(value="select b.user,lz.lzsj from lzxx lz " + 
+	@Query(value="select b.realname,lz.lzsj from lzxx lz " + 
 			" join bgr b on b.uuid=lz.fk_bgr_jsrID " + 
 			" where lz.operate_ID=:operateId group by lz.fk_bgr_jsrID,lz.lzsj ", nativeQuery=true)
 	public List<Object[]> getLzxxDetail(@Param("operateId")String operateId);
