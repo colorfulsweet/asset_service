@@ -66,4 +66,10 @@ public class ViewController {
 		model.addAttribute("zcList", zichanService.find(null, null, null, null));
 		return "zc/list";
 	}
+	
+	@GetMapping("/zc/add")
+	public String zcAdd(Model model) {
+		
+		return "zc/add";
+	}
 }
