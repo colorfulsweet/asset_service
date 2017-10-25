@@ -29,11 +29,14 @@ public class Application extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		//配置拦截器
-		registry.addInterceptor(tokenInterceptor)
+		registry.addInterceptor(tokenInterceptor) //token拦截器
 			.addPathPatterns("/**")
-			.excludePathPatterns("/login") //登陆
+			.excludePathPatterns("/login") //登陆API
 			.excludePathPatterns("/lz/outputQrcode/*") //二维码图片输出
 			.excludePathPatterns("/lz/readPhoto") //上传的资产照片输出
+			.excludePathPatterns("/views/**/*") //JSP视图相关
+			.excludePathPatterns("/views/*") 
+			.excludePathPatterns("/views")
 			;
 		super.addInterceptors(registry);
 	}

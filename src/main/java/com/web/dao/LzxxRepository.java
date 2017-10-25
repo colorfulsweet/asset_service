@@ -13,12 +13,12 @@ import com.web.entity.Lzxx;
 public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	public List<Lzxx> findByOperateID(String operateID);
 	/**
-	 * 根据操作ID和资产ID查询流转信息()
+	 * 根据操作ID和资产uuid查询流转信息
 	 * @param operateID
 	 * @param zcId
 	 * @return
 	 */
-	public Lzxx findByOperateIDAndFkZichanZcID(String operateID, String fkZichanZcID);
+	public Lzxx findByOperateIDAndFkZichanUuid(String operateID, String fkZichanUuid);
 	
 	@Query(value="select lz.fk_bgr_jsrid from lzxx lz where lz.operate_id=:operateId " + 
 			" group by lz.fk_bgr_jsrid", nativeQuery=true)
@@ -61,7 +61,7 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	 * @return
 	 */
 	@Query(value="select count(*) from " + 
-			"(select zc.lbie from zichan zc where zc.uuid in " + 
+			"(select zc.lbie from zichan zc where zc.zcid in " + 
 			"(select fk_zichan_zcid from lzxx lz where lz.operate_ID=:operateId)" + 
 			"group by zc.lbie) t", nativeQuery=true)
 	public int typeCount(@Param("operateId")String operateId);

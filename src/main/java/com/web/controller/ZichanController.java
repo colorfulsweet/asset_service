@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entity.Zichan;
@@ -16,6 +17,7 @@ import com.web.service.ZichanService;
  *
  */
 @RestController
+@RequestMapping("/zichan")
 public class ZichanController {
 	@Autowired
     private ZichanService zichanService;
@@ -29,7 +31,7 @@ public class ZichanController {
 	 * @param uuids 多个UUID,以逗号分隔
 	 * @return
 	 */
-	@GetMapping("/zichan/list")
+	@GetMapping("/list")
 	public List<Zichan> list(String zcID, String mingch, String lbie, String uuids) {
 		return zichanService.find(zcID, mingch, lbie, uuids);
 	}
@@ -38,7 +40,7 @@ public class ZichanController {
 	 * @param bgrId
 	 * @return
 	 */
-	@GetMapping("/zichan/findByBgrId")
+	@GetMapping("/findByBgrId")
 	public List<Zichan> findByBgrId(String bgrId) {
 		return zichanService.findByBgrId(bgrId);
 	}
@@ -48,8 +50,18 @@ public class ZichanController {
 	 * @param lzIds
 	 * @return
 	 */
-	@PostMapping("/zichan/getByOperateId")
+	@PostMapping("/getByOperateId")
 	public List<Zichan> getByOperateId(String operateId) {
 		return zichanService.getByOperateId(operateId);
+	}
+	
+	/**
+	 * 查询资产的最后一条(时间最晚)流转记录当中的照片路径
+	 * @param zcid 资产编码(不是zichan表的uuid)
+	 * @return 图片相对路径
+	 */
+	@PostMapping("/findLastPhoto")
+	public List<String> findLastPhoto(String zcid) {
+		return zichanService.findLastPhoto(zcid);
 	}
 }

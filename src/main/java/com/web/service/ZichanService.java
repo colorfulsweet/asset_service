@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.utils.HqlUtils;
@@ -19,6 +20,12 @@ public class ZichanService {
 	
 	@Autowired
 	private ZichanRepository zichanRep;
+	
+	/**
+	 * 数据库名称
+	 */
+	@Value("${jdbc.schema-name}")
+	private String schemaName;
 	
 	@PersistenceContext
     private EntityManager entityManager;
@@ -89,6 +96,10 @@ public class ZichanService {
 	 */
 	public void delete(String uuid) {
 		zichanRep.delete(uuid);
+	}
+	
+	public List<String> findLastPhoto(String zcid) {
+		return zichanRep.findLastPhoto(zcid);
 	}
 	
 	/**

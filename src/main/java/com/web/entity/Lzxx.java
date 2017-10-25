@@ -33,6 +33,8 @@ public class Lzxx implements Serializable {
 	private String biaozhi;// varchar(30) comment '发放回收流转标志',
 	@Column(name="fk_zichan_zcid")
 	private String fkZichanZcID;// varchar(32) comment '资产编码',
+	@Column(name="fk_zichan_uuid")
+	private String fkZichanUuid;// varchar(32) comment '资产表uuid',
 	@Column(name="fk_zhaopian_pzzpurl")
 	private String fkZhaopianPzzpURL;// varchar(32) comment '凭证照片附件',
 	@Column(name="fk_zhaopian_sbzpid")
@@ -134,5 +136,13 @@ public class Lzxx implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getFkZichanUuid() {
+		return fkZichanUuid;
+	}
+
+	public void setFkZichanUuid(String fkZichanUuid) {
+		this.fkZichanUuid = fkZichanUuid;
 	}
 }

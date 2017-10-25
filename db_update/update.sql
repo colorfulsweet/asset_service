@@ -18,3 +18,5 @@ ALTER TABLE `zichan`
 	ADD INDEX `Index 2` (`lbie`),
 	ADD INDEX `Index 3` (`mingch`);
 
+ALTER TABLE `lzxx`
+ADD COLUMN `fk_zichan_uuid` VARCHAR(32) NULL DEFAULT NULL COMMENT '资产表uuid' AFTER `fk_zichan_zcid`;

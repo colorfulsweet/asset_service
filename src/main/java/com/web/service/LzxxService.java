@@ -119,7 +119,7 @@ public class LzxxService {
 			} else {
 				log.warn("未知的数据类型:"+entry.getValue().getClass().getName());
 			}
-			String zcId = null;
+			String zcUuid = null;
 			if(lzNum.compareTo(currentNum) < 0) { 
 				//需要流转的资产数量小于现有数量
 				//则需要进行数据的拆分
@@ -133,14 +133,15 @@ public class LzxxService {
 				Zichan zcCopy = new Zichan(zc); 
 				zcCopy.setUuid(null);
 				zcCopy.setShul(lzNum);
-				zcId = zichanRep.save(zcCopy).getUuid();
+				zcUuid = zichanRep.save(zcCopy).getUuid();
 			} else {
-				zcId = zc.getUuid();
+				zcUuid = zc.getUuid();
 			}
 			Lzxx lzxx = new Lzxx();
 			lzxx.setOperateID(operateId);//操作ID
 			lzxx.setBiaozhi(flag.getFlag().toString());//流转类型标识(1出库 2流转 3回收)
-			lzxx.setFkZichanZcID(zcId);//资产表数据的uuid
+			lzxx.setFkZichanUuid(zcUuid);//资产表数据的uuid
+			lzxx.setFkZichanZcID(zc.getZcid());//资产编码
 			lzxx.setLzsj(new Date());//流转时间
 			lzxx.setFkBgrFcrID(fcrId); //发出人
 			lzxx.setFkBgrJsrID(jsrId); //接受人
@@ -223,8 +224,8 @@ public class LzxxService {
 		input.close();
 	}
 	
-	public Lzxx findByOperateIdAndZcId(String operateId, String zcId) {
-		return lzxxRep.findByOperateIDAndFkZichanZcID(operateId, zcId);
+	public Lzxx findByOperateIdAndZcUuid(String operateId, String zcUuid) {
+		return lzxxRep.findByOperateIDAndFkZichanUuid(operateId, zcUuid);
 	}
 	/**
 	 * 更新流转信息当中的照片URL

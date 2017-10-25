@@ -97,8 +97,8 @@ public class LzController {
 		if(photoPath == null) {
 			return new ResBody(0, "文件上传失败");
 		}
-		//根据lzId找到operateId , 根据operateId和zcId确定流转表中的一条数据
-		Lzxx lzxx = lzxxService.findByOperateIdAndZcId(operateId, zcId);
+		//根据lzId找到operateId , 根据operateId和zcUuid确定流转表中的一条数据
+		Lzxx lzxx = lzxxService.findByOperateIdAndZcUuid(operateId, zcId);
 		if(lzxx == null) {
 			return new ResBody(0, "未获得对应流转信息");
 		}
