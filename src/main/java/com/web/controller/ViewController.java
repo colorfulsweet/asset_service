@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.utils.PageUtil;
 import com.web.entity.Bgr;
 import com.web.service.BgrService;
 import com.web.service.ZichanService;
@@ -62,8 +63,8 @@ public class ViewController {
 	}
 	
 	@GetMapping("/zc/list")
-	public String zcList(Model model) {
-		model.addAttribute("zcList", zichanService.find(null, null, null, null));
+	public String zcList(Model model, PageUtil page) {
+		model.addAttribute("zcList", zichanService.findByPage(page));
 		return "zc/list";
 	}
 	

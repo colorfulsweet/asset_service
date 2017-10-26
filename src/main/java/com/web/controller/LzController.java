@@ -148,7 +148,11 @@ public class LzController {
 			return new ResBody(0, "操作失败");
 		}
 	}
-	
+	/**
+	 * 获取统计信息
+	 * @param operateId 操作ID
+	 * @return
+	 */
 	@GetMapping("/count/{operateId}")
 	@ResponseBody
 	public ResBody count(@PathVariable("operateId")String operateId) {
@@ -175,6 +179,16 @@ public class LzController {
 			}
 		}
 		return res;
+	}
+	/**
+	 * 查询用户的接收和转出记录
+	 * @param bgrId 用户ID
+	 * @return
+	 */
+	@GetMapping("/findRecordByBgr")
+	@ResponseBody
+	public List<Map<String, Object>> findRecordByBgr(String bgrId) {
+		return lzxxService.findRecordByBgr(bgrId);
 	}
 	/**
 	 * 检查某次流转是否已经全部上传照片

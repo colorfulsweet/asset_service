@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,7 @@ public class LzxxService {
 			lzxx.setBiaozhi(flag.getFlag().toString());//流转类型标识(1出库 2流转 3回收)
 			lzxx.setFkZichanUuid(zcUuid);//资产表数据的uuid
 			lzxx.setFkZichanZcID(zc.getZcid());//资产编码
+			lzxx.setLzsl(lzNum);//流转数量
 			lzxx.setLzsj(new Date());//流转时间
 			lzxx.setFkBgrFcrID(fcrId); //发出人
 			lzxx.setFkBgrJsrID(jsrId); //接受人
@@ -335,6 +337,25 @@ public class LzxxService {
 	 */
 	public int checkUpload(String operateId) {
 		return lzxxRep.checkUpload(operateId);
+	}
+	
+	/**
+	 * 查询用户的接收和转出记录
+	 * @param bgrId 用户ID
+	 * @return
+	 */
+	public List<Map<String, Object>> findRecordByBgr(String bgrId) {
+		List<Object[]> result = lzxxRep.findRecordByBgr(bgrId);
+		List<Map<String, Object>> finalResult = new ArrayList<Map<String, Object>>();
+		for(Object[] record : result) {
+			Map<String,Object> recordMap = new HashMap<String,Object>();
+			finalResult.add(recordMap);
+			recordMap.put("zcName", record[0]);
+			recordMap.put("shul", record[1]);
+			recordMap.put("jjf", record[2]);
+			recordMap.put("lzsj", record[3]);
+		}
+		return finalResult;
 	}
 	
 	/**

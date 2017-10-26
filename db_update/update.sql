@@ -20,3 +20,6 @@ ALTER TABLE `zichan`
 
 ALTER TABLE `lzxx`
 ADD COLUMN `fk_zichan_uuid` VARCHAR(32) NULL DEFAULT NULL COMMENT '资产表uuid' AFTER `fk_zichan_zcid`;
+
+ALTER TABLE `lzxx`
+ADD COLUMN `lzsl` DECIMAL(10,0) NULL DEFAULT NULL COMMENT '流转数量' AFTER `fk_zhaopian_sbzpid`;

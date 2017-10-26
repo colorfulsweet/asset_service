@@ -1,6 +1,7 @@
 package com.web.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -39,6 +40,8 @@ public class Lzxx implements Serializable {
 	private String fkZhaopianPzzpURL;// varchar(32) comment '凭证照片附件',
 	@Column(name="fk_zhaopian_sbzpid")
 	private String fkZhaopianSbzpid;// varchar(32) comment '设备照片',
+	@Column(name="lzsl")
+	private BigDecimal lzsl;//流转数量
 	@Column(name="lzsj")
 	private Date lzsj;// datetime comment '流转时间',
 	@Column(name="fk_bgr_fcrid")
@@ -144,5 +147,13 @@ public class Lzxx implements Serializable {
 
 	public void setFkZichanUuid(String fkZichanUuid) {
 		this.fkZichanUuid = fkZichanUuid;
+	}
+
+	public BigDecimal getLzsl() {
+		return lzsl;
+	}
+
+	public void setLzsl(BigDecimal lzsl) {
+		this.lzsl = lzsl;
 	}
 }

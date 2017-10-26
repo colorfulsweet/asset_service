@@ -9,9 +9,13 @@ import javax.persistence.TypedQuery;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.utils.HqlUtils;
+import com.utils.PageUtil;
 import com.web.dao.ZichanRepository;
 import com.web.entity.Zichan;
 
@@ -29,6 +33,12 @@ public class ZichanService {
 	
 	@PersistenceContext
     private EntityManager entityManager;
+	
+	public Page<Zichan> findByPage(PageUtil page) {
+		Pageable pageRequest = new PageRequest(page.getPageNow()-1, page.getPageSize());
+		return zichanRep.findAll(pageRequest);
+	}
+	
 	/**
 	 * 查询(根据需要的查询字段而定)
 	 * @param zcID
