@@ -9,11 +9,128 @@
 <body>
 <div class="admin-biaogelist">
 <div class="listbiaoti am-cf">
-	<div class="am-icon-plus title">新增资产</div>
+	<div class="am-icon-plus title">资产入库</div>
 </div>
-
+    <div class="fbneirong">
+      <form action="/views/zc/save" method="post" class="am-form" id="zc-form">
+<!--       	<input type="hidden" name="uuid" /> -->
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产编码：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="zcid" />
+          </div>
+          <div class="zuo">资产名称：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="mingch" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">保管单位：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="fkBgdwid" />
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="zuo">数量：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="shul" />
+          </div>
+          <div class="zuo">类别：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="lbie" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">单位：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="danwei" />
+          </div>
+          <div class="zuo">单价：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="danjia" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">项目部：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="fkXmID" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产来源：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="zcly" />
+          </div>
+          <div class="zuo">供应商：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="gysDcxm" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">规格型号：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="ggxh" />
+          </div>
+          <div class="zuo">资产状态：</div>
+          <div class="you" style="width:30%">
+          	<select class="am-input-sm" name="zczt">
+          	  <option value="采购">采购</option>
+          	  <option value="调入">调入</option>
+          	</select>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">品牌厂家：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="ppcj" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">备注：</div>
+          <div class="you">
+            <textarea rows="2" name="beizhu"></textarea>
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="you" style="margin-left: 10%;">
+              <button class="am-btn am-btn-success am-radius" id="saveAndReturn">保存并返回</button>
+			  <button class="am-btn am-btn-success am-radius" id="saveAndContinue">保存并继续入库</button>
+			  <button class="am-btn am-btn-secondary am-radius" onclick="window.location.href='/views/zc/list'; return false;">返回</button>
+          </div>
+        </div>
+      </form>
+    </div>
 </div>
 <script src="/resources/lib/jquery/jquery.min.js"></script>
 <script src="/resources/lib/amazeui/js/amazeui.min.js"></script>
+<script>
+$(function(){
+var saveCallback = function(ajaxCallback) {
+	return function() {
+		$.post("/views/zc/save", $("#zc-form").serializeArray(), function(res){
+			if(res.status) {
+				ajaxCallback.call(null);
+			}
+		}, "json");
+		return false;
+	}
+};
+$("#saveAndReturn").on("click", saveCallback(function(){
+	window.location.href="/views/zc/list";
+}));
+$("#saveAndContinue").on("click", saveCallback(function(){
+	window.location.reload();
+}));
+
+});
+
+</script>
 </body>
 </html>

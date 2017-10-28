@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.utils.FileUtil;
 import com.utils.ResBody;
 import com.utils.enums.LzType;
 import com.web.entity.Bgr;
@@ -44,6 +45,8 @@ public class LzController {
 	private LzxxService lzxxService;
 	@Autowired
 	private BgrService bgrService;
+	@Autowired
+	private FileUtil fileUtil;
 	@Autowired
 	private ServletContext context;
 	
@@ -85,19 +88,19 @@ public class LzController {
 		}
 	}
 	/**
-	 * 拍照上传 (用流转ID和资产ID可以唯一确定到流转表当中的一条数据)
-	 * @param file
-	 * @param lzId 流转ID
+	 * 拍照上传 (用操作ID和资产ID可以唯一确定到流转信息表当中的一条数据)
+	 * @param photo 上传的图片
+	 * @param operateId 操作ID
 	 * @param zcId 资产ID
 	 */
 	@PostMapping("/uploadPhoto")
 	@ResponseBody
 	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String operateId, String zcId) {
-		String photoPath = lzxxService.writeFile(photo, context);
+		String photoPath = fileUtil.writeFile(photo, context);
 		if(photoPath == null) {
 			return new ResBody(0, "文件上传失败");
 		}
-		//根据lzId找到operateId , 根据operateId和zcUuid确定流转表中的一条数据
+		//根据operateId和zcUuid确定流转表中的一条数据
 		Lzxx lzxx = lzxxService.findByOperateIdAndZcUuid(operateId, zcId);
 		if(lzxx == null) {
 			return new ResBody(0, "未获得对应流转信息");
@@ -115,7 +118,7 @@ public class LzController {
 	@GetMapping("/readPhoto")
 	public void readPhoto(String photoPath, HttpServletResponse response) {
 		try {
-			lzxxService.readFile(photoPath, response.getOutputStream(), context);
+			fileUtil.readFile(photoPath, response.getOutputStream(), context);
 		} catch (IOException e) {
 			log.error("读取文件错误!", e);
 		}

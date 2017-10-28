@@ -64,4 +64,6 @@ public class ZichanController {
 	public List<String> findLastPhoto(String zcid) {
 		return zichanService.findLastPhoto(zcid);
 	}
+	
+
 }

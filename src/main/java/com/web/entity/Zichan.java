@@ -43,6 +43,8 @@ public class Zichan implements Serializable {
 		this.danwei = zc.getDanwei();
 		this.danjia = zc.getDanjia();
 		this.zczt = zc.getZczt();
+		this.pdzt = zc.getPdzt();
+		this.status = zc.getStatus();
 	}
 	
 	// 主键
@@ -99,6 +101,12 @@ public class Zichan implements Serializable {
 	
 	@Column(name="zczt")
 	private String zczt ;//varchar(32) DEFAULT NULL COMMENT '资产状态',
+	
+	@Column(name="pdzt")
+	private String pdzt;//盘点状态:已盘点 未盘点
+	
+	@Column(name="status")
+	private String status; //状态 :正常 损坏 丢失
 
 	public String getUuid() {
 		return uuid;
@@ -226,6 +234,18 @@ public class Zichan implements Serializable {
 
 	public void setBgr(Bgr bgr) {
 		this.bgr = bgr;
+	}
+	public String getPdzt() {
+		return pdzt;
+	}
+	public void setPdzt(String pdzt) {
+		this.pdzt = pdzt;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

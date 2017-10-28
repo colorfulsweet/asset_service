@@ -9,9 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.utils.PageUtil;
+import com.utils.ResBody;
 import com.web.entity.Bgr;
+import com.web.entity.Zichan;
 import com.web.service.BgrService;
 import com.web.service.ZichanService;
 
@@ -72,5 +75,21 @@ public class ViewController {
 	public String zcAdd(Model model) {
 		
 		return "zc/add";
+	}
+	
+	/**
+	 * 新增或修改的保存
+	 * @param zichan 资产数据
+	 * @return
+	 */
+	@PostMapping("/zc/save")
+	@ResponseBody
+	public ResBody save(Zichan zichan, HttpSession session) {
+		if(zichan.getBgr() == null) {
+			Bgr bgr = (Bgr) session.getAttribute("login_user");
+			zichan.setBgr(bgr);
+		}
+		zichanService.save(zichan);
+		return new ResBody(1,"保存成功");
 	}
 }

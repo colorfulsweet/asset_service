@@ -97,6 +97,12 @@ public class ZichanService {
 	 * @return
 	 */
 	public Zichan save(Zichan zichan) {
+		if(StringHelper.isEmpty(zichan.getPdzt())) {
+			zichan.setPdzt("未盘点");
+		}
+		if(StringHelper.isEmpty(zichan.getStatus())) {
+			zichan.setStatus("正常");
+		}
 		return zichanRep.save(zichan);
 	}
 	

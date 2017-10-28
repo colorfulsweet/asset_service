@@ -23,3 +23,10 @@ ADD COLUMN `fk_zichan_uuid` VARCHAR(32) NULL DEFAULT NULL COMMENT '资产表uuid
 
 ALTER TABLE `lzxx`
 ADD COLUMN `lzsl` DECIMAL(10,0) NULL DEFAULT NULL COMMENT '流转数量' AFTER `fk_zhaopian_sbzpid`;
+
+ALTER TABLE `zichan`
+	ADD COLUMN `status` VARCHAR(32) NULL DEFAULT NULL COMMENT '状态(正常 损坏 丢失 其他)' AFTER `zczt`,
+	ADD COLUMN `pdzt` VARCHAR(32) NULL DEFAULT NULL COMMENT '盘点状态' AFTER `status`;
+	
+ALTER TABLE `pdxx`
+	ADD COLUMN `fk_zichan_uuid` VARCHAR(32) NULL DEFAULT NULL COMMENT '资产uuid' AFTER `uuid`;

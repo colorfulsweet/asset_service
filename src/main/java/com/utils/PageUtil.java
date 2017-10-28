@@ -8,7 +8,6 @@ public class PageUtil {
 	private long rowCount;//总记录数
 	private int pageCount;//总页数
 	private int rowStart;//查询起始的行数
-	private String linkUrl;//跳转的URL地址
 	private List<?> result;
 	public PageUtil(){}
 	/**
@@ -74,12 +73,6 @@ public class PageUtil {
 //	public void setRowStart(int rowStart) {
 //		this.rowStart = rowStart;
 //	}
-	public String getLinkUrl() {
-		return linkUrl;
-	}
-	public void setLinkUrl(String linkUrl) {
-		this.linkUrl = linkUrl;
-	}
 	public List<?> getResult() {
 		return result;
 	}

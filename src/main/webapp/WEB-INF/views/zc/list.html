@@ -38,7 +38,7 @@
         <td th:text="${item.zcly}"></td>
         <td th:text="${item.gysDcxm}"></td>
         <td th:text="${item.ggxh}"></td>
-        <td th:text="${item.bgr.realname}"></td>
+        <td th:text="${item.bgr!=null ? item.bgr.realname : null}"></td>
         <td>
         	<div class="am-btn-toolbar">
             <div class="am-btn-group am-btn-group-xs">
@@ -58,7 +58,7 @@
     </tbody>
   </table>
 	<div class="am-btn-group am-btn-group-xs">
-		<a href="/views/zc/add" class="am-btn am-btn-default"><span class="am-icon-plus"></span>新增</a>
+		<a href="/views/zc/add" class="am-btn am-btn-default"><span class="am-icon-plus"></span>资产入库</a>
 		<a href="javascript:void(0);" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span>批量删除</a>
 	</div>
   <ul class="am-pagination am-fr">
