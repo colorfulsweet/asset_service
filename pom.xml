@@ -4,6 +4,7 @@
 	<groupId>com.jxd</groupId>
 	<artifactId>asset_service</artifactId>
 	<version>1.0.0</version>
+	<packaging>war</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-boot.version>1.5.8.RELEASE</spring-boot.version>
@@ -83,6 +84,22 @@
 		</dependency>
 	</dependencies>
 	<build>
+<!-- 		<resources> -->
+<!--            <resource> -->
+<!--                <directory>${basedir}/src/main/resources</directory> -->
+<!--                <targetPath>BOOT-INF/classes</targetPath> -->
+<!--                <includes> -->
+<!--                    <include>**/**</include> -->
+<!--                </includes> -->
+<!--            </resource> -->
+<!--            <resource> -->
+<!--                <directory>${basedir}/src/main/webapp</directory> -->
+<!--                <targetPath>META-INF</targetPath> -->
+<!--                <includes> -->
+<!--                    <include>**/**</include> -->
+<!--                </includes> -->
+<!--            </resource> -->
+<!-- 	   </resources> -->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
