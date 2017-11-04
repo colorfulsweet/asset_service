@@ -98,7 +98,7 @@ public class ZichanService {
 	 */
 	public Zichan save(Zichan zichan) {
 		if(StringHelper.isEmpty(zichan.getPdzt())) {
-			zichan.setPdzt("未盘点");
+			zichan.setPdzt("新入库");
 		}
 		if(StringHelper.isEmpty(zichan.getStatus())) {
 			zichan.setStatus("正常");

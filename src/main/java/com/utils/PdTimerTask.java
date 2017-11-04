@@ -54,7 +54,6 @@ public class PdTimerTask {
 	}
 	
 	private void _pdReset() {
-		
 		log.info("===重置盘点状态开始===当前日期:"+formatter.format(new Date()));
 		int result = pdxxRep.PdztReset("未盘点");
 		log.info("===重置盘点状态完成===影响的资产数据数量:"+result);

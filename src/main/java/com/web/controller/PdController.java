@@ -1,8 +1,12 @@
 package com.web.controller;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,5 +62,27 @@ public class PdController {
 	public ResBody save(Pdxx pdxx, String status, String photoPath) {
 		pdxxService.savePdxx(pdxx, status, photoPath);
 		return new ResBody(1, "保存成功");
+	}
+	
+	/**
+	 * 保存入库信息(相当于入库之后的首次盘点)
+	 * @param pdxx
+	 * @param photoPath 已上传照片的路径
+	 * @return
+	 */
+	@PostMapping("/rkSave")
+	public ResBody rkSave(Pdxx pdxx,String photoPath) {
+		pdxxService.saveRk(pdxx, photoPath);
+		return new ResBody(1, "保存成功");
+	}
+	
+	/**
+	 * 获取当前的时间戳
+	 * @return
+	 * @throws ParseException 
+	 */
+	@GetMapping("/getTimestamp")
+	public long getTimestamp() throws ParseException {
+		return new Date().getTime();
 	}
 }

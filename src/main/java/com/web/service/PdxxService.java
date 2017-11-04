@@ -46,6 +46,7 @@ public class PdxxService {
 	 * 保存盘点信息
 	 * @param pdxx
 	 * @param status 资产状态(正常 损坏 丢失 其他)
+	 * @param photoPath 照片路径
 	 */
 	public void savePdxx(Pdxx pdxx, String status, String photoPath) {
 		//写入盘点信息
@@ -63,4 +64,23 @@ public class PdxxService {
 		zichanRep.save(zc);
 	}
 	
+	/**
+	 * 保存入库信息(相当于入库之后的首次盘点)
+	 * @param pdxx
+	 * @param photoPath 照片路径
+	 */
+	public void saveRk(Pdxx pdxx, String photoPath) {
+		//写入盘点信息
+		PhotoIndex photoIndex = photoRep.findByPhotoPath(photoPath);
+		Zichan zc = zichanRep.findOne(pdxx.getFkZichanUuid());
+		pdxx.setFkBgrBgrid(zc.getBgr().getUuid()); //保管人ID
+		pdxx.setPdsj(new Date()); //盘点时间
+		pdxx.setShul(zc.getShul()); //数量
+		pdxx.setUnit(zc.getDanwei()); //单位
+		pdxx.setFkZhaopianId(photoIndex.getId());
+		pdxxRep.save(pdxx);
+
+		zc.setPdzt("未盘点");
+		zichanRep.save(zc);
+	}
 }
