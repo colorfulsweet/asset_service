@@ -106,6 +106,10 @@ public class ZichanService {
 		return zichanRep.save(zichan);
 	}
 	
+	public Zichan findOne(String uuid) {
+		return zichanRep.findOne(uuid);
+	}
+	
 	/**
 	 * 删除
 	 * @param uuid 数据主键

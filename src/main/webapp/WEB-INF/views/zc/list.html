@@ -3,8 +3,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>资产列表</title>
-<link rel="stylesheet" href="/resources/lib/amazeui/css/amazeui.css" />
-<link rel="stylesheet" href="/resources/css/admin.css" />
+<link rel="stylesheet" href="../../../resources/lib/amazeui/css/amazeui.css" 
+	th:href="@{/resources/lib/amazeui/css/amazeui.css}" />
+<link rel="stylesheet" href="../../../resources/css/admin.css" 
+	th:href="@{/resources/css/admin.css}"/>
 </head>
 <body>
 <div class="admin-biaogelist">
@@ -33,7 +35,7 @@
         <td><input type="checkbox" /></td>
         <td th:text="${zcStat.count}"></td>
         <td th:text="${item.mingch}"></td>
-        <td th:text="${item.shul.doubleValue()}"></td>
+        <td th:text="${item.shul!=null ? item.shul.doubleValue() : null}"></td>
         <td th:text="${item.danwei}"></td>
         <td th:text="${item.zcly}"></td>
         <td th:text="${item.gysDcxm}"></td>
@@ -42,15 +44,17 @@
         <td>
         	<div class="am-btn-toolbar">
             <div class="am-btn-group am-btn-group-xs">
-              <button class="am-btn am-btn-default am-btn-xs am-text-success am-round" title="查看">
+              <a class="am-btn am-btn-default am-btn-xs am-text-success am-round" href="view.html"
+              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='view')}" title="查看">
               	<span class="am-icon-search" ></span>
-              </button>
-              <button class="am-btn am-btn-default am-btn-xs am-text-secondary am-round" title="修改">
+              </a>
+              <a class="am-btn am-btn-default am-btn-xs am-text-secondary am-round" href="modify.html"
+              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='modify')}" title="修改">
               	<span class="am-icon-pencil-square-o"></span>
-              </button>
-              <button class="am-btn am-btn-default am-btn-xs am-text-danger am-round" title="删除">
+              </a>
+              <a class="am-btn am-btn-default am-btn-xs am-text-danger am-round" title="删除">
               	<span class="am-icon-trash-o"></span>
-              </button>
+              </a>
             </div>
           </div>
         </td>
@@ -58,7 +62,7 @@
     </tbody>
   </table>
 	<div class="am-btn-group am-btn-group-xs">
-		<a href="/views/zc/add" class="am-btn am-btn-default"><span class="am-icon-plus"></span>资产入库</a>
+		<a href="add.html" th:href="@{/views/zc/add}" class="am-btn am-btn-default"><span class="am-icon-plus"></span>资产入库</a>
 		<a href="javascript:void(0);" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span>批量删除</a>
 	</div>
   <ul class="am-pagination am-fr">

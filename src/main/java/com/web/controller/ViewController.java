@@ -70,11 +70,30 @@ public class ViewController {
 		model.addAttribute("zcList", zichanService.findByPage(page));
 		return "zc/list";
 	}
-	
+	/**
+	 * 新增
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/zc/add")
-	public String zcAdd(Model model) {
-		
+	public String zcAdd() {
 		return "zc/add";
+	}
+	/**
+	 * 修改
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/zc/get")
+	public String zcGet(Model model, String uuid, String operate) {
+		model.addAttribute("zc", zichanService.findOne(uuid));
+		switch(operate) {
+			case "modify" :
+				return "zc/modify";
+			case "view" : 
+				return "zc/view";
+			default : return "/error";
+		}
 	}
 	
 	/**

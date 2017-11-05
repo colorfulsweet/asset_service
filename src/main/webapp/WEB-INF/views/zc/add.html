@@ -1,10 +1,13 @@
+<!-- 资产信息 新增页面 -->
 <!DOCTYPE html >
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>资产列表</title>
-<link rel="stylesheet" href="/resources/lib/amazeui/css/amazeui.css" />
-<link rel="stylesheet" href="/resources/css/admin.css" />
+<link rel="stylesheet" href="../../../resources/lib/amazeui/css/amazeui.css" 
+	th:href="@{/resources/lib/amazeui/css/amazeui.css}" />
+<link rel="stylesheet" href="../../../resources/css/admin.css" 
+	th:href="@{/resources/css/admin.css}"/>
 </head>
 <body>
 <div class="admin-biaogelist">
@@ -13,7 +16,6 @@
 </div>
     <div class="fbneirong">
       <form action="/views/zc/save" method="post" class="am-form" id="zc-form">
-<!--       	<input type="hidden" name="uuid" /> -->
         <div class="am-form-group am-cf">
           <div class="zuo">资产编码：</div>
           <div class="you" style="width:30%">
@@ -79,6 +81,7 @@
           <div class="zuo">资产状态：</div>
           <div class="you" style="width:30%">
           	<select class="am-input-sm" name="zczt">
+          	  <option >====请选择====</option>
           	  <option value="采购">采购</option>
           	  <option value="调入">调入</option>
           	</select>
@@ -102,7 +105,7 @@
           <div class="you" style="margin-left: 10%;">
               <button class="am-btn am-btn-success am-radius" id="saveAndReturn">保存并返回</button>
 			  <button class="am-btn am-btn-success am-radius" id="saveAndContinue">保存并继续入库</button>
-			  <button class="am-btn am-btn-secondary am-radius" onclick="window.location.href='/views/zc/list'; return false;">返回</button>
+			  <a class="am-btn am-btn-secondary am-radius" href="list.html" th:href="@{/views/zc/list}">返回</a>
           </div>
         </div>
       </form>

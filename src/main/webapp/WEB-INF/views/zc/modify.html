@@ -1,0 +1,136 @@
+<!-- 资产信息 编辑页面 -->
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>资产列表</title>
+<link rel="stylesheet" href="../../../resources/lib/amazeui/css/amazeui.css" 
+	th:href="@{/resources/lib/amazeui/css/amazeui.css}" />
+<link rel="stylesheet" href="../../../resources/css/admin.css" 
+	th:href="@{/resources/css/admin.css}"/>
+</head>
+<body>
+<div class="admin-biaogelist">
+<div class="listbiaoti am-cf">
+	<div class="am-icon-plus title">资产入库</div>
+</div>
+    <div class="fbneirong">
+      <form action="/views/zc/save" method="post" class="am-form" id="zc-form">
+      	<input type="hidden" name="uuid" th:value="${zc.uuid}"/>
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产编码：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="zcid" th:value="${zc.zcid}" />
+          </div>
+          <div class="zuo">资产名称：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="mingch" th:value="${zc.mingch}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">保管单位：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="fkBgdwid" th:value="${zc.fkBgdwid}" />
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="zuo">数量：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="shul" th:value="${zc.shul!=null ? zc.shul.doubleValue() : null}" />
+          </div>
+          <div class="zuo">类别：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="lbie" th:value="${zc.lbie}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">单位：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="danwei" th:value="${zc.danwei}" />
+          </div>
+          <div class="zuo">单价：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="danjia" th:value="${zc.danjia}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">项目部：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="fkXmID" th:value="${zc.fkXmID}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产来源：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="zcly" th:value="${zc.zcly}" />
+          </div>
+          <div class="zuo">供应商：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="gysDcxm" th:value="${zc.gysDcxm}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">规格型号：</div>
+          <div class="you" style="width:30%">
+            <input type="text" class="am-input-sm" name="ggxh" th:value="${zc.ggxh}" />
+          </div>
+          <div class="zuo">资产状态：</div>
+          <div class="you" style="width:30%">
+          	<select class="am-input-sm" name="zczt" >
+          	  <option >====请选择====</option>
+          	  <option value="采购" th:selected="${zc.zczt=='采购'}">采购</option>
+          	  <option value="调入" th:selected="${zc.zczt=='调入'}">调入</option>
+          	</select>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">品牌厂家：</div>
+          <div class="you">
+            <input type="text" class="am-input-sm" name="ppcj" th:value="${zc.ppcj}" />
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">备注：</div>
+          <div class="you">
+            <textarea rows="2" name="beizhu" th:text="${zc.beizhu}" ></textarea>
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="you" style="margin-left: 10%;">
+              <button class="am-btn am-btn-success am-radius" id="saveAndReturn">保存并返回</button>
+			  <a class="am-btn am-btn-secondary am-radius" href="list.html" th:href="@{/views/zc/list}">返回</a>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+<script src="/resources/lib/jquery/jquery.min.js"></script>
+<script src="/resources/lib/amazeui/js/amazeui.min.js"></script>
+<script>
+$(function(){
+var saveCallback = function(ajaxCallback) {
+	return function() {
+		$.post("/views/zc/save", $("#zc-form").serializeArray(), function(res){
+			if(res.status) {
+				ajaxCallback.call(null);
+			}
+		}, "json");
+		return false;
+	}
+};
+$("#saveAndReturn").on("click", saveCallback(function(){
+	window.location.href="/views/zc/list";
+}));
+
+});
+
+</script>
+</body>
+</html>

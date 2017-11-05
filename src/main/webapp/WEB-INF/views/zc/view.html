@@ -1,0 +1,111 @@
+<!-- 资产信息 编辑页面 -->
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>资产列表</title>
+<link rel="stylesheet" href="../../../resources/lib/amazeui/css/amazeui.css" 
+	th:href="@{/resources/lib/amazeui/css/amazeui.css}" />
+<link rel="stylesheet" href="../../../resources/css/admin.css" 
+	th:href="@{/resources/css/admin.css}"/>
+</head>
+<body>
+<div class="admin-biaogelist">
+<div class="listbiaoti am-cf">
+	<div class="am-icon-plus title">资产入库</div>
+</div>
+    <div class="fbneirong">
+      <form action="/views/zc/save" method="post" class="am-form" id="zc-form">
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产编码：</div>
+          <div class="you" style="width:30%">
+          	<span th:text="${zc.zcid}"></span>
+          </div>
+          <div class="zuo">资产名称：</div>
+          <div class="you" style="width:30%">
+          	<span th:text="${zc.mingch}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">保管单位：</div>
+          <div class="you">
+            <span th:text="${zc.fkBgdwid}"></span>
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="zuo">数量：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.shul!=null ? zc.shul.doubleValue() : null}"></span>
+          </div>
+          <div class="zuo">类别：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.lbie}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">单位：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.danwei}"></span>
+          </div>
+          <div class="zuo">单价：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.danjia}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">项目部：</div>
+          <div class="you">
+            <span th:text="${zc.fkXmID}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">资产来源：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.zcly}"></span>
+          </div>
+          <div class="zuo">供应商：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.gysDcxm}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">规格型号：</div>
+          <div class="you" style="width:30%">
+            <span th:text="${zc.ggxh}"></span>
+          </div>
+          <div class="zuo">资产状态：</div>
+          <div class="you" style="width:30%">
+          	<span th:text="${zc.zczt}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">品牌厂家：</div>
+          <div class="you">
+            <span th:text="${zc.ppcj}"></span>
+          </div>
+        </div>
+        
+        <div class="am-form-group am-cf">
+          <div class="zuo">备注：</div>
+          <div class="you">
+            <span th:text="${zc.beizhu}"></span>
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <div class="you" style="margin-left: 10%;">
+			  <a class="am-btn am-btn-secondary am-radius" href="list.html" th:href="@{/views/zc/list}">返回</a>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+<script src="/resources/lib/jquery/jquery.min.js"></script>
+<script src="/resources/lib/amazeui/js/amazeui.min.js"></script>
+</body>
+</html>
