@@ -12,11 +12,14 @@
 <body>
 <div class="admin-biaogelist">
 <div class="listbiaoti am-cf">
-	<div class="am-icon-plus title">资产入库</div>
+	<div class="am-icon-plus title">资产编辑</div>
 </div>
     <div class="fbneirong">
       <form action="/views/zc/save" method="post" class="am-form" id="zc-form">
-      	<input type="hidden" name="uuid" th:value="${zc.uuid}"/>
+      	<input type="hidden" name="uuid" th:value="${zc.uuid}" />
+      	<input type="hidden" name="status" th:value="${zc.status}" />
+      	<input type="hidden" name="pdzt" th:value="${zc.pdzt}" />
+      	<input type="hidden" name="bgr.uuid" th:value="${zc.bgr!=null ? zc.bgr.uuid : null}" />
         <div class="am-form-group am-cf">
           <div class="zuo">资产编码：</div>
           <div class="you" style="width:30%">
