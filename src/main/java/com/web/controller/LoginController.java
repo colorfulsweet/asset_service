@@ -59,6 +59,9 @@ public class LoginController {
 		if(bgr == null) {
 			return new ResBody(0, "原密码输入错误!");
 		}
+		if(newPwd.equals(oldPwd)) {
+			return new ResBody(0, "新密码不能与原密码相同!");
+		}
 		bgr.setPassword(DigestUtils.sha1Hex(newPwd));
 		bgrService.save(bgr);
 		return new ResBody(1, "密码修改成功!");

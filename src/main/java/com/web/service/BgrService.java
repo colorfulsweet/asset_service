@@ -2,9 +2,11 @@ package com.web.service;
 
 import java.util.List;
 
+import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.utils.ReflectUtils;
 import com.web.dao.BgrRepository;
 import com.web.entity.Bgr;
 
@@ -22,7 +24,13 @@ public class BgrService {
 	}
 	
 	public Bgr save(Bgr bgr) {
-		return bgrRep.save(bgr);
+		if(StringHelper.isEmpty(bgr.getUuid())) {
+			return bgrRep.save(bgr);
+		} else {
+			Bgr currentBgr = bgrRep.getOne(bgr.getUuid());
+			ReflectUtils.reflectCopyField(currentBgr, bgr);
+			return bgrRep.save(bgr);
+		}
 	}
 	
 	public List<String> queryQxByBgr(String bgrId) {
