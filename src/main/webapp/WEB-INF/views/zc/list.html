@@ -23,6 +23,7 @@
         <th >名称</th>
         <th >数量</th>
         <th >单位</th>
+        <th >单价</th>
         <th >资产来源</th>
         <th >供应商名称</th>
         <th >规格型号</th>
@@ -37,6 +38,7 @@
         <td th:text="${item.mingch}"></td>
         <td th:text="${item.shul!=null ? item.shul.doubleValue() : null}"></td>
         <td th:text="${item.danwei}"></td>
+        <td th:text="${item.danjia!=null ? item.danjia.doubleValue() : null}"></td>
         <td th:text="${item.zcly}"></td>
         <td th:text="${item.gysDcxm}"></td>
         <td th:text="${item.ggxh}"></td>

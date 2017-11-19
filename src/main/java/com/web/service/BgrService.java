@@ -28,8 +28,14 @@ public class BgrService {
 			return bgrRep.save(bgr);
 		} else {
 			Bgr currentBgr = bgrRep.getOne(bgr.getUuid());
-			ReflectUtils.reflectCopyField(currentBgr, bgr);
-			return bgrRep.save(bgr);
+//			ReflectUtils.reflectCopyField(currentBgr, bgr);
+			currentBgr.setUser(bgr.getUser()); //用户名
+			currentBgr.setRealname(bgr.getRealname()); //姓名
+			currentBgr.setDepartment(bgr.getDepartment()); //部门
+			currentBgr.setTitle(bgr.getTitle()); //职务
+			currentBgr.setLxdh(bgr.getLxdh()); //联系电话
+			currentBgr.setDzyx(bgr.getDzyx()); //电子邮箱
+			return bgrRep.save(currentBgr);
 		}
 	}
 	
