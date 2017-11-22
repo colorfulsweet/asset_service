@@ -4,14 +4,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.utils.HqlUtils;
@@ -34,10 +35,10 @@ public class ZichanService {
 	@PersistenceContext
     private EntityManager entityManager;
 	
-	public Page<Zichan> findByPage(PageUtil page) {
-		Pageable pageRequest = new PageRequest(page.getPageNow()-1, page.getPageSize());
-		return zichanRep.findAll(pageRequest);
-	}
+//	public Page<Zichan> findByPage(PageUtil page) {
+//		Pageable pageRequest = new PageRequest(page.getPageNow()-1, page.getPageSize());
+//		return zichanRep.findAll(pageRequest);
+//	}
 	
 	/**
 	 * 查询(根据需要的查询字段而定)
@@ -47,24 +48,24 @@ public class ZichanService {
 	 * @param uuids
 	 * @return
 	 */
-	public List<Zichan> find(String zcID, String mingch, String lbie, String uuids) {
-		StringBuilder hql = new StringBuilder("from Zichan bean where 1=1 ");
+	public List<Zichan> find(String zcID, String mingch, String lbie, String uuids, PageUtil page) {
 		String[] uuidArr = null;
+		StringBuilder where = new StringBuilder(" where 1=1 ");
 		if(StringHelper.isNotEmpty(uuids)) {
 			uuidArr = uuids.split(",");
-			hql.append(" and bean.uuid in ("+HqlUtils.createPlaceholder(uuidArr.length)+") ");
+			where.append(" and bean.uuid in ("+HqlUtils.createPlaceholder(uuidArr.length)+") ");
 		}
 		if(StringHelper.isNotEmpty(zcID)) {
-			hql.append(" and bean.zcid like :zcID ");
+			where.append(" and bean.zcid like :zcID ");
 		}
 		if(StringHelper.isNotEmpty(mingch)) {
-			hql.append(" and bean.mingch like :mingch ");
+			where.append(" and bean.mingch like :mingch ");
 		}
 		if(StringHelper.isNotEmpty(lbie)) {
-			hql.append(" and bean.lbie=:lbie ");
+			where.append(" and bean.lbie=:lbie ");
 		}
 		
-		TypedQuery<Zichan> query = entityManager.createQuery(hql.toString(), Zichan.class);
+		TypedQuery<Zichan> query = entityManager.createQuery("from Zichan bean"+where.toString(), Zichan.class);
 		if(StringHelper.isNotEmpty(uuids)) {
 			HqlUtils.setParamList(query, uuidArr, 1);
 		}
@@ -76,6 +77,25 @@ public class ZichanService {
 		}
 		if(StringHelper.isNotEmpty(lbie)) {
 			query.setParameter("lbie", lbie);
+		}
+		if(page != null) {
+			query.setFirstResult(page.getRowStart());
+			query.setMaxResults(page.getPageSize());
+			Query countQuery = entityManager.createQuery("select count(*) from Zichan bean"+where.toString());
+			
+			if(StringHelper.isNotEmpty(uuids)) {
+				HqlUtils.setParamList(query, uuidArr, 1);
+			}
+			if(StringHelper.isNotEmpty(zcID)) {
+				countQuery.setParameter("zcID", "%"+zcID+"%");
+			}
+			if(StringHelper.isNotEmpty(mingch)) {
+				countQuery.setParameter("mingch", "%"+mingch+"%");
+			}
+			if(StringHelper.isNotEmpty(lbie)) {
+				countQuery.setParameter("lbie", lbie);
+			}
+			page.setRowCount(countQuery.getSingleResult().toString());
 		}
 		return query.getResultList();
 	}

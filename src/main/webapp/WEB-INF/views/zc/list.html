@@ -11,11 +11,42 @@
 <body>
 <div class="admin-biaogelist">
 <div class="listbiaoti am-cf">
-	<div class="am-icon-database title">资产列表</div>
+	<div class="title"><i class="am-icon-database"></i> 资产列表</div>
 </div>
 
-<form class="am-form am-g">
-  <table width="100%" class="am-table am-table-bordered am-table-radius am-table-striped am-table-hover">
+<form class="am-form am-g am-form-inline" action="/views/zc/list" method="post">
+  <div class="am-form-group">
+    <label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">编码:</label>
+    <div class="am-u-sm-9">
+      <input type="text" class="am-input-sm am-form-field" name="zcID" th:value="${zcID}" />
+    </div>
+  </div>
+
+  <div class="am-form-group">
+    <label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">名称:</label>
+    <div class="am-u-sm-9">
+      <input type="text" class="am-input-sm am-form-field" name="mingch" th:value="${mingch}" />
+    </div>
+  </div>
+  <div class="am-form-group">
+  	<label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">类别:</label>
+  	<div class="am-u-sm-9">
+      <input type="text" class="am-input-sm am-form-field" name="lbie" th:value="${lbie}" />
+  	</div>
+  </div>
+  <button type="submit" class="am-btn am-btn-success">查询</button>
+  <button type="button" onclick="$.resetForm(this)" class="am-btn am-btn-default">重置</button>
+  <div style="padding:5px 0">
+	  <div class="am-btn-group">
+	    <a href="add.html" th:href="@{/views/zc/add}" class="am-btn am-btn-sm am-btn-primary">
+	    	<i class="am-icon-plus"></i> 资产入库
+	    </a>
+	    <a href="javascript:void(0);" class="am-btn am-btn-sm am-btn-danger">
+	    	<i class="am-icon-trash-o"></i> 批量删除
+	    </a>
+	  </div>
+  </div>
+  <table class="am-table am-table-bordered am-table-radius am-table-striped am-table-hover" style="margin-top:5px;">
     <thead>
       <tr class="am-success">
         <th class="table-check"><input type="checkbox" /></th>
@@ -33,7 +64,7 @@
     </thead>
     <tbody>
       <tr th:each="item,zcStat : ${zcList}">
-        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" th:value="${item.uuid}"/></td>
         <td th:text="${zcStat.count}"></td>
         <td th:text="${item.mingch}"></td>
         <td th:text="${item.shul!=null ? item.shul.doubleValue() : null}"></td>
@@ -63,24 +94,24 @@
       </tr>
     </tbody>
   </table>
-	<div class="am-btn-group am-btn-group-xs">
-		<a href="add.html" th:href="@{/views/zc/add}" class="am-btn am-btn-default"><span class="am-icon-plus"></span>资产入库</a>
-		<a href="javascript:void(0);" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span>批量删除</a>
-	</div>
   <ul class="am-pagination am-fr">
-     <li th:class="${zcList.number==0}?'am-disabled':''">
-     	<a th:href="@{/views/zc/list(pageNow=${zcList.number})}">«</a>
+     <li th:class="${page.pageNow==1}?'am-disabled':''">
+     	<a th:href="@{/views/zc/list(pageNow=${page.pageNow-1})}">«</a>
      </li>
-     <li th:each="index : ${#numbers.sequence(1,zcList.totalPages)}" th:class="${index==zcList.number+1}?'am-active':''">
+     <li th:each="index : ${#numbers.sequence(1,page.pageCount==0?1:page.pageCount)}" th:class="${index==page.pageNow || page.pageCount==0}?'am-active':''">
      	<a th:href="@{/views/zc/list(pageNow=${index})}" th:text="${index}">1</a>
      </li>
-     <li th:class="${zcList.number+1==zcList.totalPages}?'am-disabled':''">
-     	<a th:href="@{/views/zc/list(pageNow=${zcList.number+2})}">»</a>
+     <li th:class="${page.pageNow==page.pageCount}?'am-disabled':''">
+     	<a th:href="@{/views/zc/list(pageNow=${page.pageNow+1})}">»</a>
      </li>
    </ul>
 </form>
 </div>
-<script src="/resources/lib/jquery/jquery.min.js"></script>
-<script src="/resources/lib/amazeui/js/amazeui.min.js"></script>
+<script th:src="@{/resources/lib/jquery/jquery.min.js}" 
+	src="../../../resources/lib/jquery/jquery.min.js"></script>
+<script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" 
+	src="../../../resources/lib/amazeui/js/amazeui.min.js"></script>
+<script th:src="@{/resources/js/base.js}" 
+	src="../../../resources/js/base.js"></script>
 </body>
 </html>

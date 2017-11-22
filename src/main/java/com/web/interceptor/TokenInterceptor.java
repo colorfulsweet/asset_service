@@ -1,3 +1,4 @@
+
 package com.web.interceptor;
 
 import java.io.PrintWriter;
@@ -35,6 +36,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 		String token = request.getParameter("_token");
 		if(StringHelper.isEmpty(token)) {
 			log.info("请求中未包含_token参数值");
+			response.setCharacterEncoding("gbk");
 			PrintWriter writer = response.getWriter();
 			writer.print(JSON.toJSON(new ResBody(-1, "请求中未包含_token参数值")));
 			return false;

@@ -12,17 +12,26 @@
 </head>
 <body>
 
-<form class="login" action="/views/login" method="post">
+<form class="login" action="/views/login" method="post" onsubmit="return checkLoginForm()">
 	<p class="title">用户登录</p>
-	<input type="text" placeholder="用户名" name="user" th:value="${username}"/>
+	<input type="text" placeholder="用户名" name="user" required="required" th:value="${username}"/>
 	<i class="fa fa-user"></i>
-	<input type="password" placeholder="密码" name="password" />
+	<input type="password" placeholder="密码" required="required" name="password" id="pwd" />
 	<i class="fa fa-key"></i>
 	<button type="submit">
 		<span class="state">登录</span>
 	</button>
 	<span class="msg" th:text="${msg}"></span>
 </form>
-
+<script src="../../resources/js/sha1.js"></script>
+<script>
+function checkLoginForm() {
+	var pwd = document.getElementById("pwd");
+	if(!pwd.value) {
+		return;
+	}
+	pwd.value = SHA.hex_sha1(pwd.value);
+}
+</script>
 </body>
 </html>

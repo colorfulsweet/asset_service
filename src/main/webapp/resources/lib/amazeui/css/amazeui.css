@@ -2726,6 +2726,7 @@ fieldset[disabled] .am-checkbox-inline {
     width: 100%;
   }
   .am-form-inline .am-form-label {
+  	padding-top : .3em;
     margin-bottom: 0;
     vertical-align: middle;
   }

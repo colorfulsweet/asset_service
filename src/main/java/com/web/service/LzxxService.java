@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.google.zxing.WriterException;
 import com.utils.FileUtil;
+import com.utils.PageUtil;
 import com.utils.QrcodeUtils;
 import com.utils.enums.LzType;
 import com.utils.enums.Role;
@@ -51,6 +55,53 @@ public class LzxxService {
 	
 	@Autowired
 	private ZichanService zichanService;
+	
+	@PersistenceContext
+    private EntityManager entityManager;
+	
+	/**
+	 * 分页查询所有的流转信息
+	 * @param page 分页信息
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Object[]> find(String mingch, PageUtil page) {
+		StringBuilder where = new StringBuilder(" where 1=1 ");
+		
+		if(StringHelper.isNotEmpty(mingch)) {
+			where.append(" and zc.mingch like :mingch ");
+		}
+		
+		Query query = entityManager.createNativeQuery("select zc.mingch as '资产名称', " + 
+				"(case when lz.biaozhi=1 then '出库' " + 
+				"when lz.biaozhi=2 then '流转' " + 
+				"when lz.biaozhi=3 then '回收' else '' end)" + 
+				" as '操作类型',lz.lzsl as '流转数量', " + 
+				"b1.realname as '发出人',b2.realname as '接收人', " + 
+				"lz.lzsj as '流转时间',lz.fk_zhaopian_pzzpurl as '照片URL' from lzxx lz " + 
+				"join zichan zc on lz.fk_zichan_uuid=zc.uuid " + 
+				"join bgr b1 on b1.uuid=lz.fk_bgr_fcrid " + 
+				"join bgr b2 on b2.uuid=lz.fk_bgr_jsrid " + where);
+		
+		if(StringHelper.isNotEmpty(mingch)) {
+			query.setParameter("mingch", "%"+mingch+"%");
+		}
+		
+		if(page != null) {
+			query.setFirstResult(page.getRowStart());
+			query.setMaxResults(page.getPageSize());
+			Query countQuery = entityManager.createNativeQuery("select count(*) from Lzxx lz "
+					+ "join zichan zc on lz.fk_zichan_uuid=zc.uuid "
+					+ "join bgr b1 on b1.uuid=lz.fk_bgr_fcrid "
+					+ "join bgr b2 on b2.uuid=lz.fk_bgr_jsrid " + where);
+			//TODO 查询过滤条件
+			if(StringHelper.isNotEmpty(mingch)) {
+				countQuery.setParameter("mingch", "%"+mingch+"%");
+			}
+			page.setRowCount(countQuery.getSingleResult().toString());
+		}
+		return query.getResultList();
+	}
 	
 	/**
 	 * 保存流转信息

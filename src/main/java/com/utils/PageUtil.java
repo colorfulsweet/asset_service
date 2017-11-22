@@ -57,6 +57,10 @@ public class PageUtil {
 		//根据总行数与每页的记录数 , 计算出总页数
 		pageCount = (int) ((rowCount%pageSize==0) ? (rowCount/pageSize) : (rowCount/pageSize+1));
 	}
+	public void setRowCount(String rowCountStr) {
+		this.setRowCount(Long.parseLong(rowCountStr));
+	}
+	
 	public int getPageCount() {
 		return pageCount;
 	}

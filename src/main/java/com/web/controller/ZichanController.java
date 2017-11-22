@@ -33,7 +33,7 @@ public class ZichanController {
 	 */
 	@GetMapping("/list")
 	public List<Zichan> list(String zcID, String mingch, String lbie, String uuids) {
-		return zichanService.find(zcID, mingch, lbie, uuids);
+		return zichanService.find(zcID, mingch, lbie, uuids, null);
 	}
 	/**
 	 * 根据保管人ID查询资产信息
