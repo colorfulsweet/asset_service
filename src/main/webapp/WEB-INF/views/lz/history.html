@@ -59,7 +59,7 @@
   </table>
   
   
-  <ul class="am-pagination am-fr">
+  <ul class="am-pagination am-fl">
      <li th:class="${page.pageNow==1}?'am-disabled':''">
      	<a th:href="@{/views/zc/list(pageNow=${page.pageNow-1})}">«</a>
      </li>
@@ -72,6 +72,7 @@
    </ul>
 </form>
 </div>
+
 <script th:src="@{/resources/lib/jquery/jquery.min.js}" 
 	src="../../../resources/lib/jquery/jquery.min.js"></script>
 <script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" 

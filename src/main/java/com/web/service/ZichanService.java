@@ -1,31 +1,45 @@
 package com.web.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.utils.HqlUtils;
 import com.utils.PageUtil;
+import com.web.dao.BgrRepository;
 import com.web.dao.ZichanRepository;
+import com.web.entity.Bgr;
 import com.web.entity.Zichan;
 
 @Service
 public class ZichanService {
+	private static Logger log = Logger.getLogger(ZichanService.class);
 	
 	@Autowired
 	private ZichanRepository zichanRep;
 	
+	@Autowired
+	private BgrRepository bgrRep;
 	/**
 	 * 数据库名称
 	 */
@@ -141,6 +155,144 @@ public class ZichanService {
 	public List<String> findLastPhoto(String zcid) {
 		return zichanRep.findLastPhoto(zcid);
 	}
+	
+	/**
+	 * 解析Excel文件, 导入资产数据
+	 * @param input 字节输入流
+	 * @return excel数据当中的错误内容, 键为行数, 值为若干错误信息组成的List
+	 * @throws IOException
+	 */
+	public Map<String, Object> importExcel(InputStream input) throws IOException {
+		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(input));//工作簿
+		HSSFSheet sheet = wb.getSheetAt(0); //工作表
+		int rowNum = sheet.getLastRowNum();
+		
+		//错误信息集合
+		Map<Integer, List<String>> errMap = new HashMap<Integer, List<String>>();
+		List<Zichan> zcList = new ArrayList<Zichan>();
+		int cntSuccess = 0;
+		int cntErr = 0;
+		//第一行为表头, 从第二行开始读取
+		for(int rowIndex=1 ; rowIndex <= rowNum ; rowIndex++) {
+			boolean hasErr = false; //该条数据是否存在错误
+			HSSFRow row = sheet.getRow(rowIndex);
+			Zichan zc = new Zichan();
+			String zcid = getStringCellValue(row.getCell(0), true); //资产编码
+			//资产编码校验
+			if(StringHelper.isEmpty(zcid)) {
+				addErrInfo(errMap, rowIndex, "资产编码为空");
+				hasErr = true;
+			}
+			if(!zichanRep.findByZcid(zcid).isEmpty()) {
+				addErrInfo(errMap, rowIndex, "资产编码已存在:" + zcid);
+				hasErr = true;
+			}
+			zc.setZcid(zcid); //写入资产编码
+			zc.setFkBgdwid(getStringCellValue(row.getCell(1), true));//保管单位
+			
+			String bgrName = getStringCellValue(row.getCell(2), true);//保管人姓名
+			if(StringHelper.isNotEmpty(bgrName)) {
+				List<Bgr> bgrs = bgrRep.findByRealname(bgrName);
+				if(!bgrs.isEmpty()) {
+					zc.setBgr(bgrs.get(0));//保管人
+				} else {
+					addErrInfo(errMap, rowIndex, "保管人不存在:"+bgrName);
+					hasErr = true;
+				}
+			}
+			zc.setFkXmID(getStringCellValue(row.getCell(3), true)); //项目部
+			zc.setMingch(getStringCellValue(row.getCell(4), true)); //名称
+			zc.setZcly(getStringCellValue(row.getCell(5), true)); //资产来源
+			zc.setGysDcxm(getStringCellValue(row.getCell(6), true));//供应商/调出项目名称
+			zc.setBeizhu(getStringCellValue(row.getCell(7), true));//备注
+			
+			try {
+				zc.setShul(new BigDecimal(getStringCellValue(row.getCell(7), false))); //数量
+			} catch(Exception e) {
+				addErrInfo(errMap, rowIndex, "非法的数量值(必须为数字):"+getStringCellValue(row.getCell(7), false));
+				hasErr = true;
+			}
+			zc.setGgxh(getStringCellValue(row.getCell(8), true)); //规格型号
+			zc.setLbie(getStringCellValue(row.getCell(9), true)); //类别
+			zc.setPpcj(getStringCellValue(row.getCell(10), true)); //品牌厂家
+			zc.setDanwei(getStringCellValue(row.getCell(11), true)); //单位
+			try {
+				zc.setDanjia(new BigDecimal(getStringCellValue(row.getCell(12), false))); //单价
+			} catch(Exception e) {
+				addErrInfo(errMap, rowIndex, "非法的单价值(必须为数字):"+getStringCellValue(row.getCell(12), false));
+				hasErr = true;
+			}
+			zc.setZczt(getStringCellValue(row.getCell(13), true)); //资产状态(调入/采购)
+			zc.setStatus("正常"); //状态
+			zc.setPdzt("新入库"); //盘点状态
+			if(hasErr) {
+				cntErr ++;
+			} else {
+				cntSuccess ++;
+				zcList.add(zc);
+			}
+		}
+		if(!zcList.isEmpty()) {
+			zichanRep.save(zcList); //插入到数据库
+		}
+		wb.close();
+		String countInfo = "成功" + cntSuccess + "个, 失败" + cntErr + "个";
+		log.info("Excel数据解析完毕, " + countInfo);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("errorInfo", errMap);
+		result.put("countInfo", countInfo);
+		return result;
+	}
+	
+	/**
+	 * 添加Excel解析过程当中的错误信息
+	 * @param errMap 错误信息Map集合
+	 * @param index 所在行
+	 * @param msg 错误信息内容
+	 */
+	private void addErrInfo(Map<Integer, List<String>> errMap, int index, String msg) {
+		if(errMap.containsKey(index)) {
+			errMap.get(index).add(msg);
+		} else {
+			List<String> msgList = new ArrayList<String>();
+			errMap.put(index, msgList);
+			msgList.add(msg);
+		}
+	}
+	
+	/**
+	 * 获取单元格内容的字符串形式数据
+	 * @param cell 单元格对象
+	 * @param forceStr 是否强制字符串(非强制字符串的单元格如果是数字,默认会带上".0")
+	 * @return
+	 */
+	private String getStringCellValue(HSSFCell cell, boolean forceStr) {
+        String strCell = null;
+        switch (cell.getCellTypeEnum()) {
+        case STRING:
+            strCell = cell.getStringCellValue();
+            break;
+        case NUMERIC:
+        	double val = cell.getNumericCellValue();
+        	if(forceStr) {
+        		strCell = String.valueOf((int)val);
+        	} else {
+        		strCell = String.valueOf(cell.getNumericCellValue());
+        	}
+            break;
+        case BOOLEAN:
+            strCell = String.valueOf(cell.getBooleanCellValue());
+            break;
+        case BLANK:
+            strCell = "";
+            break;
+        default:
+            strCell = "";
+            break;
+        }
+        return strCell;
+    }
 	
 	/**
 	 * 对zcid相同的资产数据进行合并(这些资产的保管人相同)

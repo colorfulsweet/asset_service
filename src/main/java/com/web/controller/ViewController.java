@@ -1,15 +1,26 @@
 package com.web.controller;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.utils.FileUtil;
 import com.utils.PageUtil;
 import com.utils.ResBody;
 import com.web.entity.Bgr;
@@ -26,7 +37,7 @@ import com.web.service.ZichanService;
 @Controller
 @RequestMapping("/views")
 public class ViewController {
-	
+	private static Logger log = Logger.getLogger(ViewController.class);
 	@Autowired
 	private BgrService bgrService;
 	
@@ -35,6 +46,12 @@ public class ViewController {
 	
 	@Autowired
 	private LzxxService lzxxService;
+	
+	@Autowired
+	private ServletContext context;
+	
+	@Autowired
+	private FileUtil fileUtil;
 	
 	/**
 	 * web端首页 - 已登录转到主页面,未登录转到登陆页
@@ -149,6 +166,45 @@ public class ViewController {
 		}
 		zichanService.save(zichan);
 		return new ResBody(1,"保存成功");
+	}
+	
+	/**
+	 * 导入资产信息
+	 * @param excelUpload
+	 * @return
+	 */
+	@PostMapping("/zc/import")
+	@ResponseBody
+	public ResBody importExcel(@RequestParam("uploadExcel") MultipartFile uploadExcel) {
+		try {
+			Map<String, Object> result = zichanService.importExcel(uploadExcel.getInputStream());
+			ResBody res = new ResBody(1, "导入成功");
+			res.setData(result);
+			return res;
+		} catch (IOException e) {
+			log.error("文件上传失败!", e);
+			return new ResBody(0, "导入失败");
+		}
+	}
+	
+	/**
+	 * 下载导入模板
+	 * @param response http响应
+	 * @throws UnsupportedEncodingException 
+	 */
+	@GetMapping("/zc/downloadTemplate")
+	public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+		String templatePath = context.getRealPath("/resources/template/zc_template.xls");
+		
+        String filename = fileUtil.encodeDownloadName(request, "资产导入模板.xls"); //解决中文文件名下载后乱码的问题  
+        response.setCharacterEncoding("utf-8");  
+        response.setHeader("Content-Disposition","attachment; filename="+filename);
+        
+		try {
+			fileUtil.outputFile(templatePath, response.getOutputStream());
+		} catch (IOException e) {
+			log.error("读取模板文件错误!", e);
+		}
 	}
 	
 	/**

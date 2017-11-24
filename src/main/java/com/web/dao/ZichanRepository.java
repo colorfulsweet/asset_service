@@ -15,6 +15,8 @@ public interface ZichanRepository extends JpaRepository<Zichan, String> {
 	@Query("from Zichan a where a.uuid in(select b.fkZichanUuid from Lzxx b where b.operateID =:operateId)")
 	public List<Zichan> getByOperateId(@Param("operateId")String operateId);
 	
+	public List<Zichan> findByZcid(String zcid);
+	
 	/**
 	 * 在资产执行 出库/流转 操作完成之后, 变更资产的保管人ID为该次流转的接收人ID
 	 * @param operateId 流转的操作ID

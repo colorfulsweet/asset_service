@@ -6,12 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.hibernate.internal.util.StringHelper;
@@ -68,13 +71,24 @@ public class FileUtil {
 		}
 	}
 	/**
-	 * 读取文件从输出流进行输出
+	 * 读取上传的文件
 	 * @param filePath 文件**相对**路径
+	 * @param output 字节输出流
+	 * @param context 
+	 * @throws IOException
+	 */
+	public void readUploadFile(String filePath, OutputStream output, ServletContext context) throws IOException {
+		this.outputFile(getAbsolutePath(filePath, context), output);
+	}
+	
+	/**
+	 * 读取文件从输出流进行输出
+	 * @param filePath 文件**绝对**路径
 	 * @param output 字节输出流
 	 * @throws IOException 
 	 */
-	public void readFile(String filePath, OutputStream output, ServletContext context) throws IOException {
-		InputStream input = new FileInputStream(getAbsolutePath(filePath, context));
+	public void outputFile(String filePath, OutputStream output) throws IOException {
+		InputStream input = new FileInputStream(filePath);
 		byte[] buf = new byte[1024];
 		int len = input.read(buf);
 		while(len > 0) {
@@ -98,5 +112,23 @@ public class FileUtil {
 		} else {
 			return uploadBasePath + relativePath;
 		}
+	}
+	/**
+	 * 根据浏览器的类型对下载文件的文件名进行编码的转换
+	 * @param request HTTP请求
+	 * @param fileName 要处理的文件名
+	 * @return 编码后的文件名
+	 */
+	public String encodeDownloadName(HttpServletRequest request, String fileName) {
+		try {
+		    if (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE") > 0) {  
+		        return URLEncoder.encode(fileName, "UTF-8");  
+		    } else {  
+				return new String(fileName.getBytes("UTF-8"), "ISO8859-1");
+		    }  
+	    } catch (UnsupportedEncodingException e) {
+	    	log.error("文件名编码转换出错!", e);
+	    	return null;
+	    }
 	}
 }

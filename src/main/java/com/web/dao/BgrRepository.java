@@ -16,6 +16,8 @@ public interface BgrRepository extends JpaRepository<Bgr, String> {
 	
 	public List<Bgr> findByLxdh(String lxdh);
 	
+	public List<Bgr> findByRealname(String realname);
+	
 	@Query(value="select js.qxdj from ryjs js where js.uuid in " + 
 			"(select gx.fk_ryjs_id from ryjsgx gx where gx.fk_bgr_id=:bgrId)", nativeQuery=true) //原生SQL查询
 	public List<String> queryQxByBgr(@Param("bgrId")String bgrId);

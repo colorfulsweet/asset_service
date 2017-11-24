@@ -118,7 +118,7 @@ public class LzController {
 	@GetMapping("/readPhoto")
 	public void readPhoto(String photoPath, HttpServletResponse response) {
 		try {
-			fileUtil.readFile(photoPath, response.getOutputStream(), context);
+			fileUtil.readUploadFile(photoPath, response.getOutputStream(), context);
 		} catch (IOException e) {
 			log.error("读取文件错误!", e);
 		}

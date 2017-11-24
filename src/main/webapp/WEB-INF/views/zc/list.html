@@ -16,21 +16,21 @@
 
 <form class="am-form am-g am-form-inline" action="/views/zc/list" method="post">
   <div class="am-form-group">
-    <label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">编码:</label>
-    <div class="am-u-sm-9">
+    <label for="doc-ipt-3-a" class="am-u-sm-4 am-form-label">编码:</label>
+    <div class="am-u-sm-8">
       <input type="text" class="am-input-sm am-form-field" name="zcID" th:value="${zcID}" />
     </div>
   </div>
 
   <div class="am-form-group">
-    <label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">名称:</label>
-    <div class="am-u-sm-9">
+    <label for="doc-ipt-3-a" class="am-u-sm-4 am-form-label">名称:</label>
+    <div class="am-u-sm-8">
       <input type="text" class="am-input-sm am-form-field" name="mingch" th:value="${mingch}" />
     </div>
   </div>
   <div class="am-form-group">
-  	<label for="doc-ipt-3-a" class="am-u-sm-3 am-form-label">类别:</label>
-  	<div class="am-u-sm-9">
+  	<label for="doc-ipt-3-a" class="am-u-sm-4 am-form-label">类别:</label>
+  	<div class="am-u-sm-8">
       <input type="text" class="am-input-sm am-form-field" name="lbie" th:value="${lbie}" />
   	</div>
   </div>
@@ -38,10 +38,14 @@
   <button type="button" onclick="$.resetForm(this)" class="am-btn am-btn-default">重置</button>
   <div style="padding:5px 0">
 	  <div class="am-btn-group">
-	    <a href="add.html" th:href="@{/views/zc/add}" class="am-btn am-btn-sm am-btn-primary">
+	    <a href="add.html" th:href="@{/views/zc/add}" class="am-btn am-btn-primary">
 	    	<i class="am-icon-plus"></i> 资产入库
 	    </a>
-	    <a href="javascript:void(0);" class="am-btn am-btn-sm am-btn-danger">
+	    <a href="javascript:void(0);" class="am-btn am-btn-primary" 
+	    	data-am-modal="{target: '#upload-modal', closeViaDimmer: 0, width: 300, height: 200}">
+	    	<i class="am-icon-file-excel-o"></i> 数据导入
+	    </a>
+	    <a href="javascript:void(0);" class="am-btn am-btn-danger">
 	    	<i class="am-icon-trash-o"></i> 批量删除
 	    </a>
 	  </div>
@@ -94,7 +98,7 @@
       </tr>
     </tbody>
   </table>
-  <ul class="am-pagination am-fr">
+  <ul class="am-pagination am-fl">
      <li th:class="${page.pageNow==1}?'am-disabled':''">
      	<a th:href="@{/views/zc/list(pageNow=${page.pageNow-1})}">«</a>
      </li>
@@ -107,11 +111,77 @@
    </ul>
 </form>
 </div>
-<script th:src="@{/resources/lib/jquery/jquery.min.js}" 
-	src="../../../resources/lib/jquery/jquery.min.js"></script>
-<script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" 
-	src="../../../resources/lib/amazeui/js/amazeui.min.js"></script>
-<script th:src="@{/resources/js/base.js}" 
-	src="../../../resources/js/base.js"></script>
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="upload-modal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">导入资产数据
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close="">&times;</a>
+    </div>
+    <div class="am-modal-bd">
+    	数据导入模板 : <a th:href="@{/views/zc/downloadTemplate}" href="javascript:void(0);">下载</a>
+    </div>
+    <div class="am-modal-bd">
+       <div class="am-form-group am-form-file">
+		  <button type="button" class="am-btn am-btn-default am-btn-sm">
+		    <i class="am-icon-cloud-upload"></i> 选择要上传的文件
+		  </button>
+		  <form id="uploadExcelForm" action="/view/zc/import" method="post" enctype="multipart/form-data" >
+		    <input type="file" name="uploadExcel" id="uploadExcel" />
+		  </form>
+	   </div>
+	   <p class="am-form-help">请使用指定模板填写数据，上传文件</p>
+    </div>
+  </div>
+</div>
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="result-modal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">导入结果
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close="">&times;</a>
+    </div>
+    <div class="am-modal-bd">
+       <div id="upload-result"></div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/resources/lib/jquery/jquery.min.js}" src="../../../resources/lib/jquery/jquery.min.js"></script>
+<script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" src="../../../resources/lib/amazeui/js/amazeui.min.js"></script>
+<!-- <script th:src="@{/resources/js/ajaxfileupload.js}" src="../../../resources/js/ajaxfileupload.js"></script> -->
+<script th:src="@{/resources/js/base.js}" src="../../../resources/js/base.js"></script>
+<script>
+$(function(){
+$("#uploadExcel").on("change",function(){
+	var form = document.getElementById("uploadExcelForm");
+	$.ajax({
+		url : "/views/zc/import",
+		method : "post",
+		processData: false,
+		contentType: false,
+		dataType : "json",
+		data : new FormData(form),
+		success : function(res) {
+			var resultStr = '<div><b>'+res.data.countInfo+'</b></div>';
+			for(var line in res.data.errorInfo) {
+				resultStr += '<div class="am-u-sm-4"><p>第'+line+'行</p></div>';
+				resultStr += '<div class="am-u-sm-8">';
+				for(var contentIndex in res.data.errorInfo[line]) {
+					resultStr += '<p>'+res.data.errorInfo[line][contentIndex]+'</p>';
+				}
+				resultStr += '</div>';
+			}
+			$("#upload-result").html(resultStr);
+			//显示导入结果modal
+			$("#result-modal").modal("open");
+			$("#upload-modal").modal("close");
+			$("#uploadExcel").val(null);
+		},
+		error : function(res) {
+			alert("文件上传失败");
+			$("#upload-modal").modal("close");
+		}
+	});
+});
+
+});
+</script>
 </body>
 </html>
