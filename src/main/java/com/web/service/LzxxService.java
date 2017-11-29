@@ -90,7 +90,7 @@ public class LzxxService {
 		if(page != null) {
 			query.setFirstResult(page.getRowStart());
 			query.setMaxResults(page.getPageSize());
-			Query countQuery = entityManager.createNativeQuery("select count(*) from Lzxx lz "
+			Query countQuery = entityManager.createNativeQuery("select count(*) from lzxx lz "
 					+ "join zichan zc on lz.fk_zichan_uuid=zc.uuid "
 					+ "join bgr b1 on b1.uuid=lz.fk_bgr_fcrid "
 					+ "join bgr b2 on b2.uuid=lz.fk_bgr_jsrid " + where);

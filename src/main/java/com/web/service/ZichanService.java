@@ -207,22 +207,22 @@ public class ZichanService {
 			zc.setBeizhu(getStringCellValue(row.getCell(7), true));//备注
 			
 			try {
-				zc.setShul(new BigDecimal(getStringCellValue(row.getCell(7), false))); //数量
+				zc.setShul(new BigDecimal(getStringCellValue(row.getCell(8), false))); //数量
 			} catch(Exception e) {
-				addErrInfo(errMap, rowIndex, "非法的数量值(必须为数字):"+getStringCellValue(row.getCell(7), false));
+				addErrInfo(errMap, rowIndex, "非法的数量值(必须为数字):"+getStringCellValue(row.getCell(8), false));
 				hasErr = true;
 			}
-			zc.setGgxh(getStringCellValue(row.getCell(8), true)); //规格型号
-			zc.setLbie(getStringCellValue(row.getCell(9), true)); //类别
-			zc.setPpcj(getStringCellValue(row.getCell(10), true)); //品牌厂家
-			zc.setDanwei(getStringCellValue(row.getCell(11), true)); //单位
+			zc.setGgxh(getStringCellValue(row.getCell(9), true)); //规格型号
+			zc.setLbie(getStringCellValue(row.getCell(10), true)); //类别
+			zc.setPpcj(getStringCellValue(row.getCell(11), true)); //品牌厂家
+			zc.setDanwei(getStringCellValue(row.getCell(12), true)); //单位
 			try {
-				zc.setDanjia(new BigDecimal(getStringCellValue(row.getCell(12), false))); //单价
+				zc.setDanjia(new BigDecimal(getStringCellValue(row.getCell(13), false))); //单价
 			} catch(Exception e) {
-				addErrInfo(errMap, rowIndex, "非法的单价值(必须为数字):"+getStringCellValue(row.getCell(12), false));
+				addErrInfo(errMap, rowIndex, "非法的单价值(必须为数字):"+getStringCellValue(row.getCell(13), false));
 				hasErr = true;
 			}
-			zc.setZczt(getStringCellValue(row.getCell(13), true)); //资产状态(调入/采购)
+			zc.setZczt(getStringCellValue(row.getCell(14), true)); //资产状态(调入/采购)
 			zc.setStatus("正常"); //状态
 			zc.setPdzt("新入库"); //盘点状态
 			if(hasErr) {
@@ -240,8 +240,8 @@ public class ZichanService {
 		log.info("Excel数据解析完毕, " + countInfo);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("errorInfo", errMap);
-		result.put("countInfo", countInfo);
+		result.put("errorInfo", errMap);  //错误信息集合
+		result.put("countInfo", countInfo); //统计信息
 		return result;
 	}
 	
