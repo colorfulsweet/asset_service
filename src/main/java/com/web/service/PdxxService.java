@@ -48,7 +48,7 @@ public class PdxxService {
 	 * @param status 资产状态(正常 损坏 丢失 其他)
 	 * @param photoPath 照片路径
 	 */
-	public void savePdxx(Pdxx pdxx, String status, String photoPath) {
+	public void savePdxx(Pdxx pdxx, String status, String photoPath, String pdzt) {
 		//写入盘点信息
 		PhotoIndex photoIndex = photoRep.findByPhotoPath(photoPath);
 		Zichan zc = zichanRep.findOne(pdxx.getFkZichanUuid());
@@ -59,7 +59,7 @@ public class PdxxService {
 		pdxx.setFkZhaopianId(photoIndex.getId());
 		pdxxRep.save(pdxx);
 
-		zc.setPdzt("已盘点");
+		zc.setPdzt(pdzt);
 		zc.setStatus(status);
 		zichanRep.save(zc);
 	}

@@ -59,8 +59,8 @@ public class PdController {
 	 * @return
 	 */
 	@PostMapping("/save")
-	public ResBody save(Pdxx pdxx, String status, String photoPath) {
-		pdxxService.savePdxx(pdxx, status, photoPath);
+	public ResBody save(Pdxx pdxx, String status, String photoPath, @RequestParam(name="pdzt",defaultValue="已盘点")String pdzt) {
+		pdxxService.savePdxx(pdxx, status, photoPath, pdzt);
 		return new ResBody(1, "保存成功");
 	}
 	
