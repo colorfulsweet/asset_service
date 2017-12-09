@@ -1,0 +1,88 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>App升级包列表</title>
+<link rel="stylesheet" href="../../../resources/lib/amazeui/css/amazeui.css" 
+	th:href="@{/resources/lib/amazeui/css/amazeui.css}" />
+<link rel="stylesheet" href="../../../resources/css/admin.css" 
+	th:href="@{/resources/css/admin.css}"/>
+</head>
+<body>
+<div class="admin-biaogelist">
+<div class="listbiaoti am-cf">
+	<div class="title"><i class="am-icon-tags"></i> App升级包列表</div>
+</div>
+
+<form class="am-form am-g am-form-inline" action="/views/zc/list" method="post">
+  <div style="padding:5px 0">
+	  <div class="am-btn-group">
+	    <a href="add.html" th:href="@{/views/appupdate/add}" class="am-btn am-btn-primary">
+	    	<i class="am-icon-plus"></i> 添加新版本
+	    </a>
+	    <a href="javascript:void(0);" class="am-btn am-btn-danger">
+	    	<i class="am-icon-trash-o"></i> 批量删除
+	    </a>
+	  </div>
+  </div>
+  <table class="am-table am-table-bordered am-table-radius am-table-striped am-table-hover" style="margin-top:5px;">
+    <thead>
+      <tr class="am-success">
+        <th class="table-check"><input type="checkbox" /></th>
+        <th width="60px">序号</th>
+        <th >文件名</th>
+        <th >版本号</th>
+        <th >上传时间</th>
+        <th >平台</th>
+        <th >是否增量包</th>
+        <th width="130px">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="item,appupdateStat : ${appVersionList}">
+        <td><input type="checkbox" th:value="${item.uuid}"/></td>
+        <td th:text="${appupdateStat.count}"></td>
+        <td th:text="${item.fileName}"></td>
+        <td th:text="${item.version}"></td>
+        <td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${item.os}"></td>
+        <td th:text="${item.increment}"></td>
+        <td>
+        	<div class="am-btn-toolbar">
+            <div class="am-btn-group am-btn-group-xs">
+              <a class="am-btn am-btn-default am-btn-xs am-text-success am-round" href="view.html"
+              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='view')}" title="查看">
+              	<span class="am-icon-search" ></span>
+              </a>
+              <a class="am-btn am-btn-default am-btn-xs am-text-secondary am-round" href="modify.html"
+              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='modify')}" title="修改">
+              	<span class="am-icon-pencil-square-o"></span>
+              </a>
+              <a class="am-btn am-btn-default am-btn-xs am-text-danger am-round" title="删除">
+              	<span class="am-icon-trash-o"></span>
+              </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ul class="am-pagination am-fl">
+     <li th:class="${page.pageNow==1}?'am-disabled':''">
+     	<a th:href="@{/views/zc/list(pageNow=${page.pageNow-1})}">«</a>
+     </li>
+     <li th:each="index : ${#numbers.sequence(1,page.pageCount==0?1:page.pageCount)}" th:class="${index==page.pageNow || page.pageCount==0}?'am-active':''">
+     	<a th:href="@{/views/zc/list(pageNow=${index})}" th:text="${index}">1</a>
+     </li>
+     <li th:class="${page.pageNow==page.pageCount}?'am-disabled':''">
+     	<a th:href="@{/views/zc/list(pageNow=${page.pageNow+1})}">»</a>
+     </li>
+   </ul>
+</form>
+</div>
+
+<script th:src="@{/resources/lib/jquery/jquery.min.js}" src="../../../resources/lib/jquery/jquery.min.js"></script>
+<script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" src="../../../resources/lib/amazeui/js/amazeui.min.js"></script>
+<script th:src="@{/resources/js/base.js}" src="../../../resources/js/base.js"></script>
+</body>
+</html>

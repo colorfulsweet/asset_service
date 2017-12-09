@@ -25,6 +25,7 @@ import com.utils.PageUtil;
 import com.utils.ResBody;
 import com.web.entity.Bgr;
 import com.web.entity.Zichan;
+import com.web.service.AppVersionService;
 import com.web.service.BgrService;
 import com.web.service.LzxxService;
 import com.web.service.ZichanService;
@@ -52,6 +53,9 @@ public class ViewController {
 	
 	@Autowired
 	private FileUtil fileUtil;
+	
+	@Autowired
+	private AppVersionService appUpdateService;
 	
 	/**
 	 * web端首页 - 已登录转到主页面,未登录转到登陆页
@@ -217,5 +221,12 @@ public class ViewController {
 		model.addAttribute("page", page);
 		model.addAttribute("mingch", mingch);
 		return "lz/history";
+	}
+	
+	@RequestMapping("/appUpdate/list")
+	public String appUpdateList(Model model, PageUtil page) {
+		model.addAttribute("appVersionList", appUpdateService.find(page));
+		model.addAttribute("page", page);
+		return "appupdate/list";
 	}
 }
