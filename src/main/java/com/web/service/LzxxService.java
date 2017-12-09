@@ -15,7 +15,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 import org.hibernate.internal.util.StringHelper;
@@ -220,11 +219,11 @@ public class LzxxService {
 	 * @param lzxx
 	 * @param photoPath 照片保存的**相对**路径
 	 */
-	public void updatePhotoId(Lzxx lzxx, String photoPath, ServletContext context) {
+	public void updatePhotoId(Lzxx lzxx, String photoPath) {
 		String oldPath = lzxx.getFkZhaopianPzzpURL();
 		if(StringHelper.isNotEmpty(oldPath)) {
 			//如果原文件存在, 则删除
-			File oldFile = new File(fileUtil.getAbsolutePath(oldPath, context));
+			File oldFile = new File(fileUtil.getAbsolutePath(oldPath));
 			if(oldFile.exists()) {
 				oldFile.delete();
 			}

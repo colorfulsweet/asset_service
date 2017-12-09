@@ -17,7 +17,8 @@
 <form class="am-form am-g am-form-inline" action="/views/zc/list" method="post">
   <div style="padding:5px 0">
 	  <div class="am-btn-group">
-	    <a href="add.html" th:href="@{/views/appupdate/add}" class="am-btn am-btn-primary">
+	    <a href="javascript:void(0);" class="am-btn am-btn-primary"
+	    	data-am-modal="{target: '#upload-modal', closeViaDimmer: 0, width: 400, height: 200}">
 	    	<i class="am-icon-plus"></i> 添加新版本
 	    </a>
 	    <a href="javascript:void(0);" class="am-btn am-btn-danger">
@@ -80,9 +81,62 @@
    </ul>
 </form>
 </div>
-
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="upload-modal">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">添加新版本
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close="">&times;</a>
+    </div>
+    <div class="am-modal-bd">
+	   <form id="uploadAppForm" action="/view/zc/import" method="post" enctype="multipart/form-data" >
+	       <div class="am-form-group">
+	       <div class="am-g">
+			  <div class="am-u-sm-4">版本号:</div>
+			  <div class="am-u-sm-8"><input type="text" class="am-input-sm am-form-field" name="version" /></div>
+			</div>
+			<br/>
+			<div class="am-g">
+			  <div class="am-u-sm-4">App文件:</div>
+			  <div class="am-u-sm-8"><input type="file" name="uploadApp" id="uploadApp" /></div>
+			</div>
+			<br/>
+			<button type="button" id="confirmUpload" class="am-btn am-btn-success">确认</button>
+		    </div>
+	   </form>
+    </div>
+  </div>
+</div>
 <script th:src="@{/resources/lib/jquery/jquery.min.js}" src="../../../resources/lib/jquery/jquery.min.js"></script>
 <script th:src="@{/resources/lib/amazeui/js/amazeui.min.js}" src="../../../resources/lib/amazeui/js/amazeui.min.js"></script>
 <script th:src="@{/resources/js/base.js}" src="../../../resources/js/base.js"></script>
+<script>
+$(function(){
+var versionReg = /^[1-9]{1}[0-9]*\.([1-9]{1}[0-9]*|0)\.([1-9]{1}[0-9]*|0)$/;
+$("#confirmUpload").click(function(){
+	var form = document.getElementById("uploadAppForm");
+	if(!versionReg.test($("input[name=version]").val())) {
+		alert("版本号格式不符(例如: 1.1.0)");
+		return;
+	}
+	$.ajax({
+		url : "/views/appUpdate/upload",
+		method : "post",
+		processData: false,
+		contentType: false,
+		dataType : "json",
+		data : new FormData(form),
+		success : function(res) {
+			location.reload();
+		},
+		error : function(res) {
+			alert("文件上传失败");
+			$("#upload-modal").modal("close");
+		}
+	});
+});
+
+
+});
+
+</script>
 </body>
 </html>

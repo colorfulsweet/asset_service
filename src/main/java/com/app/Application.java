@@ -36,6 +36,7 @@ public class Application extends WebMvcConfigurerAdapter {
 			.excludePathPatterns("/login") //登陆API
 			.excludePathPatterns("/lz/outputQrcode/*") //二维码图片输出
 			.excludePathPatterns("/lz/readPhoto") //上传的资产照片输出
+			.excludePathPatterns("/appUpdate/*") //应用升级相关
 			.excludePathPatterns("/views/**/*") //PC页面视图相关
 			.excludePathPatterns("/views/*") 
 			.excludePathPatterns("/views")

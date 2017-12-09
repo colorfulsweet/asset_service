@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.utils.FileUtil;
 import com.utils.PageUtil;
 import com.utils.ResBody;
+import com.web.entity.AppVersion;
 import com.web.entity.Bgr;
 import com.web.entity.Zichan;
 import com.web.service.AppVersionService;
@@ -228,5 +229,18 @@ public class ViewController {
 		model.addAttribute("appVersionList", appUpdateService.find(page));
 		model.addAttribute("page", page);
 		return "appupdate/list";
+	}
+	
+	/**
+	 * 上传新版本的APP包或者增量包
+	 * @param uploadApp
+	 * @param appVersion
+	 * @return
+	 */
+	@PostMapping("/appUpdate/upload")
+	@ResponseBody
+	public ResBody uploadApp(@RequestParam("uploadApp") MultipartFile uploadApp, AppVersion appVersion) {
+		appUpdateService.saveUploadApp(uploadApp, appVersion);
+		return new ResBody(1, "上传成功");
 	}
 }

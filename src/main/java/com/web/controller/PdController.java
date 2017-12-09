@@ -3,8 +3,6 @@ package com.web.controller;
 import java.text.ParseException;
 import java.util.Date;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +29,6 @@ public class PdController {
 	
 	@Autowired
 	private FileUtil fileUtil;
-	@Autowired
-	private ServletContext context;
 	/**
 	 * 拍照上传
 	 * @param file
@@ -40,7 +36,7 @@ public class PdController {
 	 */
 	@PostMapping("/uploadPhoto")
 	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String zcUuid) {
-		String photoPath = fileUtil.writeFile(photo, context);
+		String photoPath = fileUtil.writeFile(photo);
 		if(photoPath == null) {
 			return new ResBody(0, "文件上传失败");
 		}

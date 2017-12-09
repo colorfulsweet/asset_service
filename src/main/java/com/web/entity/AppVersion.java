@@ -27,6 +27,9 @@ public class AppVersion implements Serializable {
 	@Column(name="file_path")
 	private String filePath; //VARCHAR(200) NULL COMMENT '升级包所在的路径',
 	
+	@Column(name="ext")
+	private String ext; //文件的扩展名
+	
 	@Column(name="version")
 	private String version; //VARCHAR(50) NULL COMMENT '版本号x.x.x',
 	
@@ -93,5 +96,13 @@ public class AppVersion implements Serializable {
 
 	public void setOs(String os) {
 		this.os = os;
+	}
+
+	public String getExt() {
+		return ext;
+	}
+
+	public void setExt(String ext) {
+		this.ext = ext;
 	}
 }

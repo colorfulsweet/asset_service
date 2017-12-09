@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
@@ -47,8 +46,6 @@ public class LzController {
 	private BgrService bgrService;
 	@Autowired
 	private FileUtil fileUtil;
-	@Autowired
-	private ServletContext context;
 	
 	/**
 	 * 保存流转信息
@@ -96,7 +93,7 @@ public class LzController {
 	@PostMapping("/uploadPhoto")
 	@ResponseBody
 	public ResBody uploadPhoto(@RequestParam("uploadPhoto") MultipartFile photo, String operateId, String zcId) {
-		String photoPath = fileUtil.writeFile(photo, context);
+		String photoPath = fileUtil.writeFile(photo);
 		if(photoPath == null) {
 			return new ResBody(0, "文件上传失败");
 		}
@@ -105,7 +102,7 @@ public class LzController {
 		if(lzxx == null) {
 			return new ResBody(0, "未获得对应流转信息");
 		}
-		lzxxService.updatePhotoId(lzxx, photoPath, context);
+		lzxxService.updatePhotoId(lzxx, photoPath);
 		ResBody res = new ResBody(1, "文件上传成功");
 		res.setData(photoPath);
 		return res;
@@ -118,7 +115,7 @@ public class LzController {
 	@GetMapping("/readPhoto")
 	public void readPhoto(String photoPath, HttpServletResponse response) {
 		try {
-			fileUtil.readUploadFile(photoPath, response.getOutputStream(), context);
+			fileUtil.readUploadFile(photoPath, response.getOutputStream());
 		} catch (IOException e) {
 			log.error("读取文件错误!", e);
 		}

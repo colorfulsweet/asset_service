@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.hibernate.internal.util.StringHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,17 +35,21 @@ public class FileUtil {
 	
 	@Value("${asset.upload.datedir}")
 	private String uploadDatedir;
+	
+	@Autowired
+	private ServletContext context;
 	/**
 	 * 将上传的文件写入到服务器本地
 	 * @param photo
-	 * @param context
+	 * @param hasDataPath 保存位置是否包含以年月为名的层级
 	 * @return 图片文件保存路径
 	 */
-	public String writeFile(MultipartFile photo, ServletContext context) {
+	public String writeFile(MultipartFile photo, boolean hasDataPath) {
 		DateFormat formatter = new SimpleDateFormat(uploadDatedir);
 		
 		String datePath = formatter.format(new Date());
-		File outputPath = new File(getAbsolutePath(uploadRootpath + datePath, context));
+		String relativePath = hasDataPath ? uploadRootpath + datePath : uploadRootpath;
+		File outputPath = new File(getAbsolutePath(relativePath));
 		if(!outputPath.exists()) {
 			outputPath.mkdirs(); //如果目录不存在则直接创建
 		}
@@ -57,28 +62,31 @@ public class FileUtil {
 		byte[] buf = new byte[1024];
 		try{
 			try(InputStream input = photo.getInputStream(); 
-					OutputStream output = new FileOutputStream(outputPath.getAbsolutePath() + "/" + fileUUID + ext)){
+					OutputStream output = new FileOutputStream(outputPath.getAbsolutePath() + File.separator + fileUUID + ext)){
 				int len = input.read(buf);
 				while(len > 0) {
 					output.write(buf, 0, len);
 					len = input.read(buf);
 				}
 			}
-			return uploadRootpath + datePath + "/" + fileUUID + ext;
+			return relativePath + File.separator + fileUUID + ext;
 		} catch (IOException e) {
 			log.error("文件上传错误!", e);
 			return null;
 		}
 	}
+	
+	public String writeFile(MultipartFile photo) {
+		return this.writeFile(photo, true);
+	}
 	/**
 	 * 读取上传的文件
 	 * @param filePath 文件**相对**路径
 	 * @param output 字节输出流
-	 * @param context 
 	 * @throws IOException
 	 */
-	public void readUploadFile(String filePath, OutputStream output, ServletContext context) throws IOException {
-		this.outputFile(getAbsolutePath(filePath, context), output);
+	public void readUploadFile(String filePath, OutputStream output) throws IOException {
+		this.outputFile(getAbsolutePath(filePath), output);
 	}
 	
 	/**
@@ -99,14 +107,22 @@ public class FileUtil {
 		output.close();
 		input.close();
 	}
+	/**
+	 * 按照相对路径删除文件
+	 * @param filePath 相对路径
+	 * @return 删除成功返回true, 否则返回false
+	 */
+	public boolean deleteFile(String filePath) {
+		File file = new File(getAbsolutePath(filePath));
+		return file.delete();
+	}
 	
 	/**
 	 * 根据文件的相对路径获取绝对路径(用于保存和读取文件)
 	 * @param relativePath 相对路径
-	 * @param context servlet上下文对象
 	 * @return 绝对路径(从磁盘根路径开始)
 	 */
-	public String getAbsolutePath(String relativePath, ServletContext context) {
+	public String getAbsolutePath(String relativePath) {
 		if(StringHelper.isEmpty(uploadBasePath)) {
 			return context.getRealPath(relativePath);
 		} else {
