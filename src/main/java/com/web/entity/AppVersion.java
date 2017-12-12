@@ -30,8 +30,14 @@ public class AppVersion implements Serializable {
 	@Column(name="ext")
 	private String ext; //文件的扩展名
 	
-	@Column(name="version")
-	private String version; //VARCHAR(50) NULL COMMENT '版本号x.x.x',
+	@Column(name="version_l")
+	private Integer versionL; //大版本号
+	
+	@Column(name="version_m")
+	private Integer versionM; //中版本号
+	
+	@Column(name="version_s")
+	private Integer versionS; //小版本号
 	
 	@Column(name="create_time")
 	private Date createTime; //DATETIME NULL COMMENT '上传的时间',
@@ -66,14 +72,6 @@ public class AppVersion implements Serializable {
 		this.filePath = filePath;
 	}
 
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -104,5 +102,35 @@ public class AppVersion implements Serializable {
 
 	public void setExt(String ext) {
 		this.ext = ext;
+	}
+
+	public Integer getVersionL() {
+		return versionL;
+	}
+
+	public void setVersionL(Integer versionL) {
+		this.versionL = versionL;
+	}
+
+	public Integer getVersionM() {
+		return versionM;
+	}
+
+	public void setVersionM(Integer versionM) {
+		this.versionM = versionM;
+	}
+
+	public Integer getVersionS() {
+		return versionS;
+	}
+
+	public void setVersionS(Integer versionS) {
+		this.versionS = versionS;
+	}
+	
+	public String getVersion() {
+		return (versionL==null? 0 : versionL) + "." +
+				(versionM==null? 0 : versionM) + "." +
+				(versionS==null? 0 : versionS);
 	}
 }

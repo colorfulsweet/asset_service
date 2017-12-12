@@ -47,20 +47,13 @@
         <td th:text="${item.version}"></td>
         <td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
         <td th:text="${item.os}"></td>
-        <td th:text="${item.increment}"></td>
+        <td th:text="${item.increment?'是':'否'}"></td>
         <td>
         	<div class="am-btn-toolbar">
             <div class="am-btn-group am-btn-group-xs">
-              <a class="am-btn am-btn-default am-btn-xs am-text-success am-round" href="view.html"
-              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='view')}" title="查看">
-              	<span class="am-icon-search" ></span>
-              </a>
-              <a class="am-btn am-btn-default am-btn-xs am-text-secondary am-round" href="modify.html"
-              		th:href="@{/views/zc/get(uuid=${item.uuid},operate='modify')}" title="修改">
-              	<span class="am-icon-pencil-square-o"></span>
-              </a>
-              <a class="am-btn am-btn-default am-btn-xs am-text-danger am-round" title="删除">
-              	<span class="am-icon-trash-o"></span>
+              <a class="am-btn am-btn-default am-btn-xs am-text-secondary am-round" href="view.html"
+              		th:href="@{/appUpdate/downloadById(uuid=${item.uuid})}" >
+              	<span class="am-icon-download" ></span>下载
               </a>
             </div>
           </div>

@@ -44,7 +44,13 @@ public class AppVersionService {
 		return query.getResultList();
 	}
 	
-	public AppVersion saveUploadApp(MultipartFile mtpFile, AppVersion appVersion) {
+	public AppVersion saveUploadApp(MultipartFile mtpFile, String version) {
+		String[] versionCodes = version.split("\\.");
+		AppVersion appVersion = new AppVersion();
+		appVersion.setVersionL(Integer.parseInt(versionCodes[0]));
+		appVersion.setVersionM(Integer.parseInt(versionCodes[1]));
+		appVersion.setVersionS(Integer.parseInt(versionCodes[2]));
+		
 		String fileName = mtpFile.getOriginalFilename();
 		String ext = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
 		switch (ext) {
@@ -77,7 +83,15 @@ public class AppVersionService {
 	 * @return AppVersion对象
 	 */
 	public AppVersion getLatestVersionUrl(String os) {
-//		return appVersionResp.getLatestVersion(os);
-		return null;
+		return appVersionResp.getLatestVersion(os);
+	}
+	
+	/**
+	 * 根据ID获取app版本数据
+	 * @param uuid app_version表主键
+	 * @return
+	 */
+	public AppVersion getById(String uuid) {
+		return appVersionResp.findOne(uuid);
 	}
 }

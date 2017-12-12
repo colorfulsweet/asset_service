@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.utils.FileUtil;
 import com.utils.PageUtil;
 import com.utils.ResBody;
-import com.web.entity.AppVersion;
 import com.web.entity.Bgr;
 import com.web.entity.Zichan;
 import com.web.service.AppVersionService;
@@ -48,9 +46,6 @@ public class ViewController {
 	
 	@Autowired
 	private LzxxService lzxxService;
-	
-	@Autowired
-	private ServletContext context;
 	
 	@Autowired
 	private FileUtil fileUtil;
@@ -199,14 +194,12 @@ public class ViewController {
 	 */
 	@GetMapping("/zc/downloadTemplate")
 	public void downloadTemplate(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-		String templatePath = context.getRealPath("/resources/template/zc_template.xls");
-		
         String filename = fileUtil.encodeDownloadName(request, "资产导入模板.xls"); //解决中文文件名下载后乱码的问题  
         response.setCharacterEncoding("utf-8");  
         response.setHeader("Content-Disposition","attachment; filename="+filename);
         
 		try {
-			fileUtil.outputFile(templatePath, response.getOutputStream());
+			fileUtil.readUploadFile("/zc_template.xls", response.getOutputStream());
 		} catch (IOException e) {
 			log.error("读取模板文件错误!", e);
 		}
@@ -239,8 +232,11 @@ public class ViewController {
 	 */
 	@PostMapping("/appUpdate/upload")
 	@ResponseBody
-	public ResBody uploadApp(@RequestParam("uploadApp") MultipartFile uploadApp, AppVersion appVersion) {
-		appUpdateService.saveUploadApp(uploadApp, appVersion);
+	public ResBody uploadApp(@RequestParam("uploadApp") MultipartFile uploadApp, String version) {
+		if(!version.matches("^[1-9]{1}[0-9]*\\.([1-9]{1}[0-9]*|0)\\.([1-9]{1}[0-9]*|0)$")) {
+			return new ResBody(0, "版本号格式不合法");
+		}
+		appUpdateService.saveUploadApp(uploadApp, version);
 		return new ResBody(1, "上传成功");
 	}
 }

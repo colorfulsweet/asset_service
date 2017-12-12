@@ -5,7 +5,7 @@
 <title>资产管理系统-登录</title>
 <link rel="stylesheet" type="text/css" href="../../resources/lib/font-awesome-4.7.0/css/font-awesome.min.css"
 	th:href="@{/resources/lib/font-awesome-4.7.0/css/font-awesome.min.css}" />
-<link rel="stylesheet" type="text/css" href="resources/css/normalize.min.css"
+<link rel="stylesheet" type="text/css" href="../../resources/css/normalize.min.css"
 	th:href="@{/resources/css/normalize.min.css}" />
 <link rel="stylesheet" type="text/css" href="../../resources/css/login.css"
 	th:href="@{/resources/css/login.css}" />
@@ -20,9 +20,6 @@
 	<i class="fa fa-user"></i>
 	<input type="password" placeholder="密码" required="required" name="password" id="pwd" />
 	<i class="fa fa-key"></i>
-	<!-- <div>
-	 <a href='../resources/template/资产管理.apk' >apk</a> 
-	</div> -->
 	<button type="submit">
 		<span class="state">登录</span>
 	</button>
@@ -32,11 +29,13 @@
 
 <div align="center">
 		<!-- <a onclick="showLayer()" href="#">点击下载apk</a>  -->
-		<img onmouseover="showLayer()" onmouseout="showLayer(true)" src="../resources/template/2233.png" />
+		<img onmouseover="showLayer()" onmouseout="showLayer(true)" 
+			src="../../resources/template/2233.png" th:src="@{/resources/template/2233.png}" />
 	</div>
 <div id="layer">
 	<!-- <a class="close" onclick="showLayer(true)">X</a> -->
-	<div id="img_div" align="center" style="display: block"><img  src="../resources/template/ewm.png" />
+	<div id="img_div" align="center" style="display: block">
+		<img id="qrcode_img" src="../../resources/template/ewm.png" th:src="@{/resources/template/ewm.png}" />
 	</div>
 </div>
 <div id="lightbox"></div>
@@ -45,6 +44,11 @@
 		</div> -->
 <script src="../../resources/js/sha1.js"></script>
 <script>
+window.onload = function() {
+	var qrcodeImg = document.getElementById("qrcode_img");
+	var downloadUrl = location.origin + "/appUpdate/getLatestVersion?os=Android"
+	qrcodeImg.src = location.origin+"/appUpdate/outputDownloadQrcode?content=" + escape(downloadUrl);
+}
 function checkLoginForm() {
 	
 	var pwd = document.getElementById("pwd");
@@ -59,7 +63,6 @@ function showLayer(hide) {
 	l.style.display = lb.style.display = hide ? 'none' : 'block';
 }
 /* function showdiv(){ 
-	debugger
 	if (document.getElementById("img_div").style.display=="block") { 
 		document.getElementById("img_div").style.display="none"; 
 	} else { 
