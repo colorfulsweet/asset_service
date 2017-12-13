@@ -101,15 +101,15 @@ public interface LzxxRepository extends JpaRepository<Lzxx, String> {
 	 * @param bgrId 用户id
 	 * @return 资产名称,数量,交接方,时间
 	 */
-	@Query(value="select t.mc as '资产名称',t.sl as '数量', b.realname as '交接方', t.lzsj as '时间' from " + 
+	@Query(value="select t.mc as '资产名称',t.sl as '数量', b.realname as '交接方', date_format(t.lzsj,'%Y-%m-%d') as '时间' from " + 
 			" (select " + 
 			" zc.mingch as 'mc'," + 
 			" lz.lzsl as 'sl'," + 
 			" (case when lz.fk_bgr_fcrid=:bgrId then lz.fk_bgr_jsrid" + 
 			" when lz.fk_bgr_jsrid=:bgrId then lz.fk_bgr_fcrid end) as 'jjf'," + 
-			" date_format(lz.lzsj,'%Y-%m-%d') as lzsj" + 
+			" lz.lzsj as lzsj" + 
 			" from lzxx lz join zichan zc on lz.fk_zichan_zcid=zc.zcid" + 
 			" where lz.fk_bgr_fcrid=:bgrId or lz.fk_bgr_jsrid=:bgrId) t" + 
-			" join bgr b on b.uuid=t.jjf;",nativeQuery=true)
+			" join bgr b on b.uuid=t.jjf order by t.lzsj desc",nativeQuery=true)
 	public List<Object[]> findRecordByBgr(@Param("bgrId")String bgrId);
 }

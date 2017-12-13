@@ -1,11 +1,13 @@
 package com.web.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.entity.Zichan;
@@ -32,8 +34,8 @@ public class ZichanController {
 	 * @return
 	 */
 	@GetMapping("/list")
-	public List<Zichan> list(String zcID, String mingch, String lbie, String uuids) {
-		return zichanService.find(zcID, mingch, lbie, uuids, null);
+	public List<Zichan> list( @RequestParam Map<String, String> params) {
+		return zichanService.find(params, null);
 	}
 	/**
 	 * 根据保管人ID查询资产信息
@@ -64,6 +66,4 @@ public class ZichanController {
 	public List<String> findLastPhoto(String zcid) {
 		return zichanService.findLastPhoto(zcid);
 	}
-	
-
 }

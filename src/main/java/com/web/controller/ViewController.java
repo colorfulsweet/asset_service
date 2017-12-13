@@ -116,12 +116,12 @@ public class ViewController {
 	 * @return
 	 */
 	@RequestMapping("/zc/list")
-	public String zcList(Model model, PageUtil page, String zcID, String mingch, String lbie) {
-		model.addAttribute("zcList", zichanService.find(zcID, mingch, lbie, null, page));
+	public String zcList(Model model, PageUtil page, Map<String, String> params) {
+		model.addAttribute("zcList", zichanService.find(params, page));
 		model.addAttribute("page", page);
-		model.addAttribute("zcID", zcID);
-		model.addAttribute("mingch", mingch);
-		model.addAttribute("lbie", lbie);
+		model.addAttribute("zcid", params.get("zcid"));
+		model.addAttribute("mingch", params.get("mingch"));
+		model.addAttribute("lbie", params.get("lbie"));
 		return "zc/list";
 	}
 	/**

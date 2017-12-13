@@ -49,11 +49,6 @@ public class ZichanService {
 	@PersistenceContext
     private EntityManager entityManager;
 	
-//	public Page<Zichan> findByPage(PageUtil page) {
-//		Pageable pageRequest = new PageRequest(page.getPageNow()-1, page.getPageSize());
-//		return zichanRep.findAll(pageRequest);
-//	}
-	
 	/**
 	 * 查询(根据需要的查询字段而定)
 	 * @param zcID
@@ -62,35 +57,59 @@ public class ZichanService {
 	 * @param uuids
 	 * @return
 	 */
-	public List<Zichan> find(String zcID, String mingch, String lbie, String uuids, PageUtil page) {
+	public List<Zichan> find(Map<String, String> params, PageUtil page) {
 		String[] uuidArr = null;
 		StringBuilder where = new StringBuilder(" where 1=1 ");
+		String uuids = params.get("uuids");
+		String zcid = params.get("zcid");
+		String mingch = params.get("mingch");
+		String lbie = params.get("lbie");
+		
+		String bgrId = params.get("bgrId"); //根据用户ID查询该用户名下的资产
+		String role = params.get("role");  //只查询属于MA或者属于MK的资产
+		
 		if(StringHelper.isNotEmpty(uuids)) {
 			uuidArr = uuids.split(",");
 			where.append(" and bean.uuid in ("+HqlUtils.createPlaceholder(uuidArr.length)+") ");
 		}
-		if(StringHelper.isNotEmpty(zcID)) {
-			where.append(" and bean.zcid like :zcID ");
+		Map<String, String> paramMap = new HashMap<String, String>();
+		if(StringHelper.isNotEmpty(zcid)) {
+			where.append(" and bean.zcid like :zcid ");
+			paramMap.put("zcid", zcid);
 		}
 		if(StringHelper.isNotEmpty(mingch)) {
 			where.append(" and bean.mingch like :mingch ");
+			paramMap.put("mingch", mingch);
 		}
 		if(StringHelper.isNotEmpty(lbie)) {
 			where.append(" and bean.lbie=:lbie ");
 		}
-		
+		if(StringHelper.isNotEmpty(bgrId)) {
+			where.append(" and bean.bgr.uuid=:bgrId ");
+		}
+		if(StringHelper.isNotEmpty(role)) {
+			where.append(" and bean.bgr.uuid in(select gx.fkBgrId from Ryjs js,Ryjsgx gx "
+					+ " where gx.fkRyjsId=js.uuid and js.qxdj=:role) ");
+		}
 		TypedQuery<Zichan> query = entityManager.createQuery("from Zichan bean"+where.toString(), Zichan.class);
 		if(StringHelper.isNotEmpty(uuids)) {
 			HqlUtils.setParamList(query, uuidArr, 1);
 		}
-		if(StringHelper.isNotEmpty(zcID)) {
-			query.setParameter("zcID", "%"+zcID+"%");
+		
+		if(StringHelper.isNotEmpty(zcid)) {
+			query.setParameter("zcid", "%"+zcid+"%");
 		}
 		if(StringHelper.isNotEmpty(mingch)) {
 			query.setParameter("mingch", "%"+mingch+"%");
 		}
 		if(StringHelper.isNotEmpty(lbie)) {
 			query.setParameter("lbie", lbie);
+		}
+		if(StringHelper.isNotEmpty(bgrId)) {
+			query.setParameter("bgrId", bgrId);
+		}
+		if(StringHelper.isNotEmpty(role)) {
+			query.setParameter("role", role);
 		}
 		if(page != null) {
 			query.setFirstResult(page.getRowStart());
@@ -100,14 +119,20 @@ public class ZichanService {
 			if(StringHelper.isNotEmpty(uuids)) {
 				HqlUtils.setParamList(query, uuidArr, 1);
 			}
-			if(StringHelper.isNotEmpty(zcID)) {
-				countQuery.setParameter("zcID", "%"+zcID+"%");
+			if(StringHelper.isNotEmpty(zcid)) {
+				countQuery.setParameter("zcID", "%"+zcid+"%");
 			}
 			if(StringHelper.isNotEmpty(mingch)) {
 				countQuery.setParameter("mingch", "%"+mingch+"%");
 			}
 			if(StringHelper.isNotEmpty(lbie)) {
 				countQuery.setParameter("lbie", lbie);
+			}
+			if(StringHelper.isNotEmpty(bgrId)) {
+				countQuery.setParameter("bgrId", bgrId);
+			}
+			if(StringHelper.isNotEmpty(role)) {
+				query.setParameter("role", role);
 			}
 			page.setRowCount(countQuery.getSingleResult().toString());
 		}
